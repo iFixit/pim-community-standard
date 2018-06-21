@@ -19,7 +19,7 @@
         }
     },
     "require": {
-        "akeneo/pim-community-dev": "1.7.x-dev@dev"
+        "akeneo/pim-community-dev": "dev-ifixit-production"
     },
     "require-dev": {
         "doctrine/migrations": "1.2.2",
@@ -28,8 +28,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/akeneo/pim-community-dev.git",
-            "branch": "master"
+            "url": "https://github.com/iFixit/pim-community-dev.git"
         }
     ],
     "scripts": {
