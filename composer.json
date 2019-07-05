@@ -16,14 +16,19 @@
         },
         "psr-4": {
           "Pim\\Upgrade\\": "upgrades/"
-        }
+        },
+        "classmap": [ "app/AppKernel.php", "app/AppCache.php" ],
+        "exclude-from-classmap": [
+            "vendor/akeneo/pim-community-dev/app/AppKernel.php",
+            "vendor/akeneo/pim-community-dev/app/AppCache.php"
+        ]
     },
     "require": {
-        "akeneo/pim-community-dev": "dev-ifixit-production"
+        "akeneo/pim-community-dev": "dev-ifixit-production-2"
     },
     "require-dev": {
-        "doctrine/migrations": "1.2.2",
-        "doctrine/doctrine-migrations-bundle": "1.1.0"
+        "doctrine/migrations": "1.5.0",
+        "doctrine/doctrine-migrations-bundle": "1.2.1"
     },
     "repositories": [
         {
@@ -40,7 +45,7 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget",
-            "@php app/console fos:js-routing:dump --target=web/js/routes.js"
+            "@php bin/console fos:js-routing:dump --target=web/js/routes.js"
         ],
         "post-update-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
@@ -50,16 +55,15 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget",
-            "@php app/console fos:js-routing:dump --target=web/js/routes.js",
+            "@php bin/console fos:js-routing:dump --target=web/js/routes.js",
             "Pim\\Bundle\\InstallerBundle\\ComposerScripts::copyUpgradesFiles"
         ]
-    },
-    "config": {
-        "bin-dir": "bin"
     },
     "minimum-stability": "stable",
     "extra": {
         "symfony-app-dir": "app",
+        "symfony-bin-dir": "bin",
+        "symfony-var-dir": "var",
         "symfony-web-dir": "web",
         "symfony-assets-install": "relative",
         "incenteev-parameters": {
@@ -70,11 +74,13 @@
                 "database_port": "PIM_DATABASE_PORT",
                 "database_name": "PIM_DATABASE_NAME",
                 "database_user": "PIM_DATABASE_USER",
-                "database_password": "PIM_DATABASE_PASSWORD"
+                "database_password": "PIM_DATABASE_PASSWORD",
+                "index_hosts": "PIM_INDEX_HOSTS"
             }
         },
         "branch-alias": {
-            "dev-master": "1.8.x-dev",
+            "dev-master": "2.1.x-dev",
+            "dev-2.0": "2.0.x-dev",
             "dev-1.7": "1.7.x-dev",
             "dev-1.6": "1.6.x-dev",
             "dev-1.5": "1.5.x-dev",
