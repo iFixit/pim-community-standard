@@ -24,7 +24,7 @@
         ]
     },
     "require": {
-        "akeneo/pim-community-dev": "dev-ifixit-production-2"
+        "akeneo/pim-community-dev": "dev-ifixit-production-2#7f868a690855920dd4ed611dfa2b8f5087443d99"
     },
     "require-dev": {
         "doctrine/migrations": "1.5.0",
