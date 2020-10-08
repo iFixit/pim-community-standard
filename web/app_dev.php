@@ -17,14 +17,20 @@ if (isset($_SERVER['HTTP_CLIENT_IP'])
     exit('You are not allowed to access this file. Check '.basename(__FILE__).' for more information.');
 }
 
-$loader = require_once __DIR__.'/../app/bootstrap.php.cache';
+$loader = require_once dirname($_SERVER['SCRIPT_FILENAME']).'/../app/bootstrap.php.cache';
 Debug::enable();
 
-require_once __DIR__.'/../app/AppKernel.php';
+require_once dirname($_SERVER['SCRIPT_FILENAME']).'/opt/akeneo/app/AppKernel.php';
 
 $kernel = new AppKernel('dev', true);
 $kernel->loadClassCache();
 $request = Request::createFromGlobals();
+
+// NOTE: This is added so we set any ip making a request to Akeneo as a trusted
+// proxy. The Akeneo machine is setup to only accept connections from our
+// network of machines.
+Request::setTrustedProxies([$request->server->get('REMOTE_ADDR')]);
+
 $response = $kernel->handle($request);
 $response->send();
 $kernel->terminate($request, $response);
