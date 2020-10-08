@@ -23,10 +23,6 @@ class iFixitApi {
          'timeout' => 3,
       ];
 
-      // This is needed for the moment cause iFixit is supplying Guzzle.
-      // When this code is moved to another repo (pim-communit-standard),
-      // it'll have its own composer.json
-      $this->loadIfixit();
       $this->client = new \GuzzleHttp\Client($settings);
    }
 
@@ -45,10 +41,5 @@ class iFixitApi {
          throw new \Exception("iFixit api failed:$apiPath with code:$code");
       }
       return $response;
-   }
-
-   private function loadIfixit() {
-      require_once 'vendor/autoload.php';
-      require_once 'Exec/essentials.php';
    }
 }
