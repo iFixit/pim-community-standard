@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace Ifixit\Bundle\StorefrontConnectorBundle\EventListener;
+namespace iFixit\Akeneo\iFixitBundle\EventListener;
 
-use Ifixit\Bundle\StorefrontConnectorBundle\iFixitConfig;
+use iFixit\Akeneo\iFixitBundle\iFixitConfig;
 
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;

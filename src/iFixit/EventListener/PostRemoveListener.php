@@ -1,6 +1,6 @@
 <?php
 
-namespace Ifixit\Bundle\StorefrontConnectorBundle\EventListener;
+namespace iFixit\Akeneo\iFixitBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Pim\Component\Catalog\Model\ProductInterface;

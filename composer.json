@@ -11,11 +11,11 @@
     ],
     "autoload": {
         "psr-0": {
-            "": "src/",
             "Context": "features/"
         },
         "psr-4": {
-          "Pim\\Upgrade\\": "upgrades/"
+          "Pim\\Upgrade\\": "upgrades/",
+          "iFixit\\Akeneo\\iFixitBundle\\": "src/iFixit/"
         }
     },
     "require": {

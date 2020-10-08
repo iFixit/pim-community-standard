@@ -1,8 +1,8 @@
 services:
    postsave.listener:
-      class: Ifixit\Bundle\StorefrontConnectorBundle\EventListener\PostSaveListener
+      class: iFixit\Akeneo\iFixitBundle\EventListener\PostSaveListener
       arguments:
-         - @ifixit_storefront_connector.ifixit_api
+         - @ifixit_akeneo.ifixit_api
       tags:
          - { name: kernel.event_listener, event: akeneo.storage.pre_save, method: onPreSave }
          - { name: kernel.event_listener, event: akeneo.storage.pre_save_all, method: onPreSaveAll }
@@ -10,16 +10,16 @@ services:
          - { name: kernel.event_listener, event: akeneo.storage.post_save, method: onPostSave }
 
    postremove.listener:
-      class: Ifixit\Bundle\StorefrontConnectorBundle\EventListener\PostRemoveListener
+      class: iFixit\Akeneo\iFixitBundle\EventListener\PostRemoveListener
       arguments:
-         - @ifixit_storefront_connector.ifixit_api
+         - @ifixit_akeneo.ifixit_api
       tags:
          - { name: kernel.event_listener, event: akeneo.storage.post_remove, method: onPostRemove }
 
-   ifixit_storefront_connector.ifixit_api:
-      class: Ifixit\Bundle\StorefrontConnectorBundle\EventListener\iFixitApi
+   ifixit_akeneo.ifixit_api:
+      class: iFixit\Akeneo\iFixitBundle\EventListener\iFixitApi
       arguments:
-        - @ifixit_storefront_connector.config
+        - @ifixit_akeneo.config
 
-   ifixit_storefront_connector.config:
-      class: Ifixit\Bundle\StorefrontConnectorBundle\iFixitConfig
+   ifixit_akeneo.config:
+      class: iFixit\Akeneo\iFixitBundle\iFixitConfig

@@ -1,8 +1,8 @@
 <?php
 
-namespace Ifixit\Bundle\StorefrontConnectorBundle\EventListener;
+namespace iFixit\Akeneo\iFixitBundle\EventListener;
 
-use Ifixit\Bundle\StorefrontConnectorBundle\EventListener\iFixitApi;
+use iFixit\Akeneo\iFixitBundle\EventListener\iFixitApi;
 
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Pim\Component\Catalog\Model\ProductInterface;

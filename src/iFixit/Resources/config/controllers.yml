@@ -1,6 +1,6 @@
 services:
-   ifixit_storefront_connector.clone_product_model.controller:
-      class: Ifixit\Bundle\StorefrontConnectorBundle\Controller\CloneProductModelController
+   ifixit_akeneo.clone_product_model.controller:
+      class: iFixit\Akeneo\iFixitBundle\Controller\CloneProductModelController
       arguments:
          - '@pim_catalog.repository.group'
          - '@pim_catalog.factory.group'

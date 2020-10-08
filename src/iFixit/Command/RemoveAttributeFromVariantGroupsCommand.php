@@ -1,7 +1,7 @@
 <?
 declare(strict_types = 1);
 
-namespace Ifixit\Bundle\StorefrontConnectorBundle\Command;
+namespace iFixit\Akeneo\iFixitBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;

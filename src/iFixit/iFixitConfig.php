@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Ifixit\Bundle\StorefrontConnectorBundle;
+namespace iFixit\Akeneo\iFixitBundle;
 
 class iFixitConfig {
    private const CONFIG_FILE = "/etc/dozuki/akeneo.json";

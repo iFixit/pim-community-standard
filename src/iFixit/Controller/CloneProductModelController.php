@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Ifixit\Bundle\StorefrontConnectorBundle\Controller;
+namespace iFixit\Akeneo\iFixitBundle\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
