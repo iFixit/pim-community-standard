@@ -11,15 +11,16 @@
     ],
     "autoload": {
         "psr-0": {
-            "": "src/",
             "Context": "features/"
         },
         "psr-4": {
-          "Pim\\Upgrade\\": "upgrades/"
+          "Pim\\Upgrade\\": "upgrades/",
+          "iFixit\\Akeneo\\iFixitBundle\\": "src/iFixit/"
         }
     },
     "require": {
-        "akeneo/pim-community-dev": "dev-ifixit-production"
+        "akeneo/pim-community-dev": "dev-ifixit-production",
+        "guzzlehttp/guzzle": "^6.0"
     },
     "require-dev": {
         "doctrine/migrations": "1.2.2",

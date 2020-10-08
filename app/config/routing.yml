@@ -72,6 +72,6 @@ _liip_imagine:
 _apy_jsformvalidation:
     resource: "@APYJsFormValidationBundle/Resources/config/routing/routing.yml"
 
-ifixit_connector:
-    resource: "@StorefrontConnectorBundle/Resources/config/routing.yml"
+ifixit_akeneo:
+    resource: "@iFixitAkeneoBundle/Resources/config/routing.yml"
     prefix: /api/rest/ifixit

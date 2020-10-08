@@ -1,0 +1,7 @@
+services:
+   ifixit_akeneo.clone_product_model.controller:
+      class: iFixit\Akeneo\iFixitBundle\Controller\CloneProductModelController
+      arguments:
+         - '@pim_catalog.repository.group'
+         - '@pim_catalog.factory.group'
+         - '@pim_catalog.saver.group'
