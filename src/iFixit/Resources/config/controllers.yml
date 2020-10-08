@@ -1,0 +1,7 @@
+services:
+   ifixit_storefront_connector.clone_product_model.controller:
+      class: Ifixit\Bundle\StorefrontConnectorBundle\Controller\CloneProductModelController
+      arguments:
+         - '@pim_catalog.repository.group'
+         - '@pim_catalog.factory.group'
+         - '@pim_catalog.saver.group'

@@ -1,0 +1,4 @@
+clone_product_model:
+    path: /clone_product_model
+    defaults: { _controller: ifixit_storefront_connector.clone_product_model.controller:cloneProductModel, _format: json }
+    methods: [POST]
