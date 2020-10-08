@@ -25,5 +25,4 @@ bin/*
 docker/*
 !docker/akeneo.conf
 composer.phar
-composer.lock
 docker-compose.yml
