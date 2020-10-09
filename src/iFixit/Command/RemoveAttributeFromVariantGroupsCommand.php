@@ -39,12 +39,12 @@ class RemoveAttributeFromVariantGroupsCommand extends ContainerAwareCommand {
             $this->removeAttributeFromTemplate($template, $attributeCode);
             $saver->save($variantGroup);
             $output->writeln("<info>Removed $attributeCode from variant group:{$variantGroup->getCode()}</info>");
-            $products = $variantGroup->getProducts();
-            $detacher->detachAll($products->toArray());
-            $detacher->detach($variantGroup);
-            $detacher->detach($template);
-            gc_collect_cycles();
          }
+         $products = $variantGroup->getProducts();
+         $detacher->detachAll($products->toArray());
+         $detacher->detach($variantGroup);
+         $detacher->detach($template);
+         gc_collect_cycles();
       }
 
       $output->writeln("<info>Finished removing $attributeCode</info>");
