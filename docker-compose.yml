@@ -9,8 +9,6 @@ services:
       PHP_IDE_CONFIG: 'serverName=pim-docker-cli'
       XDEBUG_ENABLED: '${XDEBUG_ENABLED:-0}'
       XDEBUG_CONFIG: 'remote_host=172.17.0.1'
-      BLACKFIRE_CLIENT_ID: '${BLACKFIRE_CLIENT_ID:-client_id}'
-      BLACKFIRE_CLIENT_TOKEN: '${BLACKFIRE_CLIENT_TOKEN:-client_token}'
     volumes:
       - './:/srv/pim'
       - '${HOST_COMPOSER_HOME:-~/.composer}:/var/www/.composer'
@@ -22,7 +20,7 @@ services:
       - 'pim'
 
   fpm:
-    image: 'akeneo/pim-php-dev:4.0'
+    image: 'akeneo/pim-php-base:4.0'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
       BEHAT_TMPDIR: '/srv/pim/var/cache/tmp'
@@ -30,8 +28,6 @@ services:
       PHP_IDE_CONFIG: 'serverName=pim-docker-web'
       XDEBUG_ENABLED: '${XDEBUG_ENABLED:-0}'
       XDEBUG_CONFIG: 'remote_host=172.17.0.1'
-      BLACKFIRE_CLIENT_ID: '${BLACKFIRE_CLIENT_ID:-client_id}'
-      BLACKFIRE_CLIENT_TOKEN: '${BLACKFIRE_CLIENT_TOKEN:-client_token}'
     volumes:
       - './:/srv/pim'
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
@@ -52,15 +48,6 @@ services:
     networks:
       - 'pim'
 
-  selenium:
-    image: 'selenium/standalone-firefox-debug:2.53.1-beryllium'
-    volumes:
-      - './:/srv/pim:ro'
-    ports:
-      - '${DOCKER_PORT_SELENIUM:-5910}:5900'
-    networks:
-      - 'pim'
-
   httpd:
     image: 'httpd:2.4'
     environment:
@@ -78,21 +65,6 @@ services:
     networks:
       - 'pim'
 
-  mysql:
-    image: 'mysql:8.0.18'
-    command: '--default-authentication-plugin=mysql_native_password'
-    environment:
-      MYSQL_ROOT_PASSWORD: 'root'
-      MYSQL_USER: '${APP_DATABASE_USER}'
-      MYSQL_DATABASE: '${APP_DATABASE_NAME}'
-      MYSQL_PASSWORD: '${APP_DATABASE_PASSWORD}'
-    ports:
-      - '${DOCKER_PORT_MYSQL:-33006}:3306'
-    volumes:
-      - './data/mysql:/var/lib/mysql'
-    networks:
-      - 'pim'
-
   elasticsearch:
     image: 'docker.elastic.co/elasticsearch/elasticsearch-oss:7.5.1'
     environment:
@@ -102,25 +74,6 @@ services:
       - '${DOCKER_PORT_ELASTICSEARCH:-9210}:9200'
     volumes:
       - './data/elasticsearch:/usr/share/elasticsearch/data'
-    networks:
-      - 'pim'
-
-  object-storage:
-    image: 'minio/minio'
-    entrypoint: '/bin/sh -c "mkdir -p /data/asset /data/archive /data/catalog/ /data/jobs && minio server /data"'
-    environment:
-      MINIO_ACCESS_KEY: 'AKENEO_OBJECT_STORAGE_ACCESS_KEY'
-      MINIO_SECRET_KEY: 'AKENEO_OBJECT_STORAGE_SECRET_KEY'
-    ports:
-      - '${DOCKER_PORT_OBJECT_STORAGE:-9090}:9000'
-    networks:
-      - 'pim'
-
-  blackfire:
-    image: blackfire/blackfire
-    environment:
-      BLACKFIRE_SERVER_ID: '${BLACKFIRE_SERVER_ID:-server_id}'
-      BLACKFIRE_SERVER_TOKEN: '${BLACKFIRE_SERVER_TOKEN:-server_token}'
     networks:
       - 'pim'
 
