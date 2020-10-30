@@ -45,7 +45,10 @@ front: assets css javascript-dev
 
 .PHONY: database
 database:
-	$(PHP_RUN) bin/console pim:installer:db ${O}
+	echo "This would have deleted the database entirely and recreated it empty"
+	echo "Uncomment out the below line to actually run the task"
+	exit 1
+	# $(PHP_RUN) bin/console pim:installer:db ${O}
 
 .PHONY: cache
 cache:
@@ -79,6 +82,9 @@ endif
 	$(MAKE) cache
 	$(MAKE) assets
 	$(MAKE) javascript-prod
+
+.PHONY: bootstrap-database
+bootstrap-database:
 	APP_ENV=prod $(MAKE) database O="--catalog vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures/minimal"
 
 .PHONY: pim-dev
