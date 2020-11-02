@@ -91,7 +91,7 @@ bootstrap-database:
 pim-dev:
 ifndef NO_DOCKER
 	APP_ENV=dev $(MAKE) up
-	docker/wait_docker_up.sh
+	docker/wait_docker_up_dev.sh
 endif
 	$(MAKE) cache
 	$(MAKE) assets
