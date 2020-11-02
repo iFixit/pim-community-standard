@@ -60,8 +60,11 @@ composer.lock: composer.json
 vendor: composer.lock
 	$(PHP_RUN) -d memory_limit=4G /usr/local/bin/composer install
 
+autoload:
+	$(PHP_RUN) -d memory_limit=4G /usr/local/bin/composer dump-autoload
+
 .PHONY: dependencies
-dependencies: vendor node_modules
+dependencies: vendor node_modules autoload
 
 .PHONY: dev
 dev:

@@ -11,7 +11,7 @@ services:
       XDEBUG_CONFIG: 'remote_host=172.17.0.1'
     volumes:
       - './:/srv/pim'
-      - '${HOST_COMPOSER_HOME:-~/.composer}:/var/www/.composer'
+      - '${HOST_COMPOSER_HOME:-./data/composer}:/var/www/.composer'
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
     working_dir: '/srv/pim'

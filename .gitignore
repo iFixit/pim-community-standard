@@ -33,6 +33,7 @@ package-lock.json
 yarn-error.log
 coverage/*
 .phpunit.result.cache
+/data
 
 ###> symfony/framework-bundle ###
 /.env
