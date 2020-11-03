@@ -6,9 +6,6 @@ services:
     environment:
       APP_ENV: '${APP_ENV:-prod}'
       COMPOSER_HOME: '/var/www/.composer'
-      PHP_IDE_CONFIG: 'serverName=pim-docker-cli'
-      XDEBUG_ENABLED: '${XDEBUG_ENABLED:-0}'
-      XDEBUG_CONFIG: 'remote_host=172.17.0.1'
     volumes:
       - './:/srv/pim'
       - '${HOST_COMPOSER_HOME:-./data/composer}:/var/www/.composer'
@@ -23,11 +20,6 @@ services:
     image: 'akeneo/pim-php-base:4.0'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
-      BEHAT_TMPDIR: '/srv/pim/var/cache/tmp'
-      BEHAT_SCREENSHOT_PATH: '/srv/pim/var/tests/screenshots'
-      PHP_IDE_CONFIG: 'serverName=pim-docker-web'
-      XDEBUG_ENABLED: '${XDEBUG_ENABLED:-0}'
-      XDEBUG_CONFIG: 'remote_host=172.17.0.1'
     volumes:
       - './:/srv/pim'
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
@@ -81,9 +73,6 @@ services:
     image: 'akeneo/pim-php-base:4.0'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
-      PHP_IDE_CONFIG: 'serverName=pim-docker-cli'
-      XDEBUG_ENABLED: '${XDEBUG_ENABLED:-0}'
-      XDEBUG_CONFIG: 'remote_host=172.17.0.1'
     depends_on:
       - 'fpm'
     volumes:
