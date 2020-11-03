@@ -7,6 +7,7 @@ services:
       APP_ENV: '${APP_ENV:-prod}'
       COMPOSER_HOME: '/var/www/.composer'
     volumes:
+      - '/etc/dozuki:/etc/dozuki:ro'
       - './:/srv/pim'
       - '${HOST_COMPOSER_HOME:-./data/composer}:/var/www/.composer'
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
@@ -21,6 +22,7 @@ services:
     environment:
       APP_ENV: '${APP_ENV:-prod}'
     volumes:
+      - '/etc/dozuki:/etc/dozuki:ro'
       - './:/srv/pim'
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
@@ -76,6 +78,7 @@ services:
     depends_on:
       - 'fpm'
     volumes:
+      - '/etc/dozuki:/etc/dozuki:ro'
       - './:/srv/pim'
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
