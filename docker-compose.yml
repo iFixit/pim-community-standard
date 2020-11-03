@@ -77,5 +77,23 @@ services:
     networks:
       - 'pim'
 
+  job-consumer:
+    image: 'akeneo/pim-php-base:4.0'
+    environment:
+      APP_ENV: '${APP_ENV:-prod}'
+      PHP_IDE_CONFIG: 'serverName=pim-docker-cli'
+      XDEBUG_ENABLED: '${XDEBUG_ENABLED:-0}'
+      XDEBUG_CONFIG: 'remote_host=172.17.0.1'
+    depends_on:
+      - 'fpm'
+    volumes:
+      - './:/srv/pim'
+      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
+      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
+    working_dir: '/srv/pim'
+    command: 'php bin/console akeneo:batch:job-queue-consumer-daemon'
+    networks:
+      - 'pim'
+
 networks:
   pim:
