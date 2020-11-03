@@ -86,6 +86,8 @@ endif
 .PHONY: bootstrap-database
 bootstrap-database:
 	APP_ENV=prod $(MAKE) database O="--catalog vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures/minimal"
+	$(PHP_RUN) bin/console pim:user:create
+	$(PHP_RUN) bin/console akeneo:elasticsearch:reset-indexes
 
 .PHONY: pim-dev
 pim-dev:

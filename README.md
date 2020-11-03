@@ -17,13 +17,12 @@ Installation instructions
 
 ```bash
 $ cp .env.dev .env
+$ chown -R 1000 ./*
 $ make
-$ make database-boostrap
-$ docker-compose run -u www-data --rm php php bin/console pim:user:create
-$ docker-compose run -u www-data --rm php php bin/console akeneo:elasticsearch:reset-indexes
+$ make bootstrap-database # DELETES ENTIRE DB, ONLY RUN ONCE!
 ```
 
 The PIM will be available on http://localhost:8080/, with the credentials you
-specified in the `pim:user:create` step from above.
+specified in the `boostrap-database` step from above.
 
 To shutdown your PIM: `make down`
