@@ -52,7 +52,7 @@ database:
 
 .PHONY: cache
 cache:
-	$(CMD_ON_PROJECT) rm -rf var/cache && $(PHP_RUN) bin/console cache:warmup
+	$(CMD_ON_PROJECT) rm -rf var/cache && $(PHP_RUN) bin/console --verbose cache:warmup
 
 composer.lock: composer.json
 	$(PHP_RUN) -d memory_limit=4G /usr/local/bin/composer update
