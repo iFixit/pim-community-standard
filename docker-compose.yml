@@ -18,7 +18,7 @@ services:
       - 'pim'
 
   fpm:
-    image: 'akeneo/pim-php-base:4.0'
+    build: ./docker
     environment:
       APP_ENV: '${APP_ENV:-prod}'
     volumes:
@@ -72,7 +72,7 @@ services:
       - 'pim'
 
   job-consumer:
-    image: 'akeneo/pim-php-base:4.0'
+    build: ./docker
     environment:
       APP_ENV: '${APP_ENV:-prod}'
     depends_on:
