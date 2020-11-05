@@ -5,9 +5,10 @@ namespace iFixit\Akeneo\iFixitBundle\EventListener;
 use iFixit\Akeneo\iFixitBundle\EventListener\iFixitApi;
 
 use Symfony\Component\EventDispatcher\GenericEvent;
-use Pim\Component\Catalog\Model\ProductInterface;
-use Pim\Component\Catalog\Model\AttributeInterface;
-use Pim\Component\Catalog\Model\GroupInterface;
+use Akeneo\Pim\Enrichment\Component\Product\Model\ProductInterface;
+use Akeneo\Pim\Enrichment\Component\Product\Model\GroupInterface;
+use Akeneo\Pim\Structure\Component\Model\AttributeInterface;
+use Psr\Log\LoggerInterface;
 
 class PostSaveListener {
    /**
