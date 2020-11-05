@@ -18,7 +18,7 @@ class PostSaveListener {
     */
    private $preSaveEventDepth = 0;
    // List of skus that recieved post-save event
-   /** @var \DS\Set */
+   /** @var \Ds\Set */
    private $savedSkus;
 
    /** @var iFixitApi */
@@ -26,7 +26,7 @@ class PostSaveListener {
 
    public function __construct(iFixitApi $ifixitApi) {
       $this->ifixitApi = $ifixitApi;
-      $this->savedSkus = new \DS\Set();
+      $this->savedSkus = new \Ds\Set();
    }
 
    public function onPreSaveAll(GenericEvent $event) {
@@ -95,7 +95,7 @@ class PostSaveListener {
       $this->savedSkus->clear();
    }
 
-   private function notifySkusChanged(\DS\Set $skus) {
+   private function notifySkusChanged(\Ds\Set $skus) {
       if ($skus->isEmpty()) {
          return;
       }
@@ -108,8 +108,8 @@ class PostSaveListener {
       ]);
    }
 
-   private function getSkusFromProducts(array $products): \DS\Set {
-      return new \DS\Set(array_map(function($product) {
+   private function getSkusFromProducts(array $products): \Ds\Set {
+      return new \Ds\Set(array_map(function($product) {
          return $this->getSkuFromProduct($product);
       }, $products));
    }
