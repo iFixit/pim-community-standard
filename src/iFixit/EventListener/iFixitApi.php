@@ -9,6 +9,8 @@ use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Psr7\Uri;
 
 class iFixitApi {
+   private const IFIXIT_SECRET_HEADER = 'x-ifixit-api-secret';
+
    /** @var \GuzzleHttp\Client */
    private $client;
 
@@ -30,10 +32,14 @@ class iFixitApi {
       $host = $this->config->get("ifixit-api-hostname");
       $url = new Uri("https://$host/api/2.0/$apiPath");
       $request = new Request('POST', $url);
+      $headers = [
+         self::IFIXIT_SECRET_HEADER => $this->config->get('ifixit-api-secret'),
+      ];
 
       $response = $this->client->send($request, [
          'json' => $body,
-         'follow_redirects' => false
+         'follow_redirects' => false,
+         'headers' => $headers
       ]);
 
       $code = $response->getStatusCode();
