@@ -11,7 +11,6 @@ services:
       - './:/srv/pim'
       - '${HOST_COMPOSER_HOME:-./data/composer}:/var/www/.composer'
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
     working_dir: '/srv/pim'
     command: 'php'
     networks:
@@ -24,7 +23,6 @@ services:
     volumes:
       - '/etc/dozuki:/etc/dozuki:ro'
       - './:/srv/pim'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
     working_dir: '/srv/pim'
     command: 'php-fpm -F'
@@ -54,8 +52,6 @@ services:
       - './:/srv/pim:ro'
       - './docker/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro'
       - './docker/akeneo.conf:/usr/local/apache2/conf/vhost.conf:ro'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
     networks:
       - 'pim'
 
@@ -81,7 +77,6 @@ services:
       - '/etc/dozuki:/etc/dozuki:ro'
       - './:/srv/pim'
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
     working_dir: '/srv/pim'
     command: 'php bin/console akeneo:batch:job-queue-consumer-daemon'
     networks:
