@@ -75,11 +75,11 @@ prod:
 
 .PHONY: pim-prod
 pim-prod:
+	$(MAKE) cache
 ifndef NO_DOCKER
 	APP_ENV=prod $(MAKE) up
 	docker/wait_docker_up.sh
 endif
-	$(MAKE) cache
 	$(MAKE) assets
 	$(MAKE) javascript-prod
 
@@ -91,11 +91,11 @@ bootstrap-database:
 
 .PHONY: pim-dev
 pim-dev:
+	$(MAKE) cache
 ifndef NO_DOCKER
 	APP_ENV=dev $(MAKE) up
 	docker/wait_docker_up_dev.sh
 endif
-	$(MAKE) cache
 	$(MAKE) assets
 	$(MAKE) javascript-dev
 	APP_ENV=dev $(MAKE) database O="--catalog vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures/icecat_demo_dev"

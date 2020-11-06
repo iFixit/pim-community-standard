@@ -5,3 +5,5 @@ RUN chmod +x /usr/local/bin/composer
 RUN mkdir -p /etc/ssl/certs/
 ADD https://curl.haxx.se/ca/cacert.pem /etc/ssl/certs/ca-bundle.pem
 RUN chmod +r /etc/ssl/certs/ca-bundle.pem
+
+# USER 1000
