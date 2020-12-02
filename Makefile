@@ -5,6 +5,7 @@
 CMD_ON_PROJECT = docker-compose run -u www-data --rm php
 PHP_RUN = $(CMD_ON_PROJECT) php
 YARN_RUN = docker-compose run -u node --rm -e YARN_REGISTRY -e PUPPETEER_SKIP_CHROMIUM_DOWNLOAD node yarn
+CONSOLE = $(PHP_RUN) bin/console
 
 ifdef NO_DOCKER
   CMD_ON_PROJECT =
@@ -23,7 +24,7 @@ node_modules: yarn.lock
 .PHONY: assets
 assets:
 	$(CMD_ON_PROJECT) rm -rf public/bundles public/js
-	$(PHP_RUN) bin/console pim:installer:assets --symlink --clean
+	$(CONSOLE) pim:installer:assets --symlink --clean
 
 .PHONY: css
 css:
@@ -48,11 +49,11 @@ database:
 	echo "This would have deleted the database entirely and recreated it empty"
 	echo "Uncomment out the below line to actually run the task"
 	exit 1
-	# $(PHP_RUN) bin/console pim:installer:db ${O}
+	# $(CONSOLE) pim:installer:db ${O}
 
 .PHONY: cache
 cache:
-	$(CMD_ON_PROJECT) rm -rf var/cache && $(PHP_RUN) bin/console --verbose cache:warmup
+	$(CMD_ON_PROJECT) rm -rf var/cache && $(CONSOLE) --verbose cache:warmup
 
 vendor: composer.lock
 	$(PHP_RUN) -d memory_limit=4G /usr/local/bin/composer install
@@ -86,8 +87,8 @@ endif
 .PHONY: bootstrap-database
 bootstrap-database:
 	APP_ENV=prod $(MAKE) database O="--catalog vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures/minimal"
-	$(PHP_RUN) bin/console pim:user:create
-	$(PHP_RUN) bin/console akeneo:elasticsearch:reset-indexes
+	$(CONSOLE) pim:user:create
+	$(CONSOLE) akeneo:elasticsearch:reset-indexes
 
 .PHONY: pim-dev
 pim-dev:
