@@ -89,7 +89,7 @@ endif
 bootstrap-database:
 	cp fixtures/jobs.yml vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures/minimal/jobs.yml
 	APP_ENV=prod $(MAKE) database O="--catalog vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures/minimal"
-	$(CONSOLE) pim:user:create
+	$(CONSOLE) pim:user:create --admin --no-interaction -- admin admin admin@admin.com Admin Admin en_US
 	$(CONSOLE) akeneo:elasticsearch:reset-indexes
 
 .PHONY: pim-dev
