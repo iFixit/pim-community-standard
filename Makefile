@@ -2,9 +2,10 @@
 # This file is a template Makefile. Some targets are presented here as examples.
 # Feel free to customize it to your needs!
 #
-CMD_ON_PROJECT = docker-compose run -u www-data --rm php
+DOCKER_COMPOSE = docker-compose
+CMD_ON_PROJECT = $(DOCKER_COMPOSE) run -u www-data --rm php
 PHP_RUN = $(CMD_ON_PROJECT) php
-YARN_RUN = docker-compose run -u node --rm -e YARN_REGISTRY -e PUPPETEER_SKIP_CHROMIUM_DOWNLOAD node yarn
+YARN_RUN = $(DOCKER_COMPOSE) run -u node --rm -e YARN_REGISTRY -e PUPPETEER_SKIP_CHROMIUM_DOWNLOAD node yarn
 CONSOLE = $(PHP_RUN) bin/console
 
 ifdef NO_DOCKER
@@ -103,9 +104,9 @@ endif
 
 .PHONY: up
 up:
-	docker-compose up -d --remove-orphan
+	$(DOCKER_COMPOSE) up -d --remove-orphan
 
 .PHONY: down
 down:
-	docker-compose down -v
+	$(DOCKER_COMPOSE) down -v
 
