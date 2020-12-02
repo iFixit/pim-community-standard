@@ -87,6 +87,7 @@ endif
 
 .PHONY: bootstrap-database
 bootstrap-database:
+	cp fixtures/jobs.yml vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures/minimal/jobs.yml
 	APP_ENV=prod $(MAKE) database O="--catalog vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures/minimal"
 	$(CONSOLE) pim:user:create
 	$(CONSOLE) akeneo:elasticsearch:reset-indexes
