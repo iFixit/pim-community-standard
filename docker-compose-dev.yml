@@ -9,8 +9,6 @@ services:
       PHP_IDE_CONFIG: 'serverName=pim-docker-cli'
       XDEBUG_ENABLED: '${XDEBUG_ENABLED:-0}'
       XDEBUG_CONFIG: 'remote_host=172.17.0.1'
-      BLACKFIRE_CLIENT_ID: '${BLACKFIRE_CLIENT_ID:-client_id}'
-      BLACKFIRE_CLIENT_TOKEN: '${BLACKFIRE_CLIENT_TOKEN:-client_token}'
     volumes:
       - './:/srv/pim'
       - '${HOST_COMPOSER_HOME:-~/.composer}:/var/www/.composer'
@@ -30,8 +28,6 @@ services:
       PHP_IDE_CONFIG: 'serverName=pim-docker-web'
       XDEBUG_ENABLED: '${XDEBUG_ENABLED:-0}'
       XDEBUG_CONFIG: 'remote_host=172.17.0.1'
-      BLACKFIRE_CLIENT_ID: '${BLACKFIRE_CLIENT_ID:-client_id}'
-      BLACKFIRE_CLIENT_TOKEN: '${BLACKFIRE_CLIENT_TOKEN:-client_token}'
     volumes:
       - './:/srv/pim'
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
@@ -49,15 +45,6 @@ services:
       - './:/srv/pim'
       - '${HOST_YARN_CACHE_FOLDER:-~/.cache/yarn}:/home/node/.yarn'
     working_dir: '/srv/pim'
-    networks:
-      - 'pim'
-
-  selenium:
-    image: 'selenium/standalone-firefox-debug:2.53.1-beryllium'
-    volumes:
-      - './:/srv/pim:ro'
-    ports:
-      - '${DOCKER_PORT_SELENIUM:-5910}:5900'
     networks:
       - 'pim'
 
@@ -113,14 +100,6 @@ services:
       MINIO_SECRET_KEY: 'AKENEO_OBJECT_STORAGE_SECRET_KEY'
     ports:
       - '${DOCKER_PORT_OBJECT_STORAGE:-9090}:9000'
-    networks:
-      - 'pim'
-
-  blackfire:
-    image: blackfire/blackfire
-    environment:
-      BLACKFIRE_SERVER_ID: '${BLACKFIRE_SERVER_ID:-server_id}'
-      BLACKFIRE_SERVER_TOKEN: '${BLACKFIRE_SERVER_TOKEN:-server_token}'
     networks:
       - 'pim'
 
