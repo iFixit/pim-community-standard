@@ -92,6 +92,12 @@ bootstrap-database:
 	$(CONSOLE) pim:user:create --admin --no-interaction -- admin "${ADMIN_PASSWORD}" admin@admin.com Admin Admin en_US
 	$(CONSOLE) akeneo:elasticsearch:reset-indexes
 
+.PHONY: reindex
+reindex:
+	$(CONSOLE) akeneo:elasticsearch:reset-indexes
+	$(CONSOLE) pim:product-model:index --all
+	$(CONSOLE) pim:product:index --all
+
 .PHONY: pim-dev
 pim-dev:
 	$(MAKE) cache
