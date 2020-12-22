@@ -7,6 +7,7 @@ CMD_ON_PROJECT = $(DOCKER_COMPOSE) run -u www-data --rm php
 PHP_RUN = $(CMD_ON_PROJECT) php
 YARN_RUN = $(DOCKER_COMPOSE) run -u node --rm -e YARN_REGISTRY -e PUPPETEER_SKIP_CHROMIUM_DOWNLOAD node yarn
 CONSOLE = $(PHP_RUN) bin/console
+AKENEO_FIXTURES = vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures
 
 ifdef NO_DOCKER
   CMD_ON_PROJECT =
@@ -87,8 +88,8 @@ endif
 
 .PHONY: bootstrap-database
 bootstrap-database:
-	cp fixtures/jobs.yml vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures/minimal/jobs.yml
-	APP_ENV=prod $(MAKE) database O="--catalog vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures/minimal"
+	cp fixtures/jobs.yml $(AKENEO_FIXTURES)/minimal/jobs.yml
+	APP_ENV=prod $(MAKE) database O="--catalog $(AKENEO_FIXTURES)/minimal"
 	$(CONSOLE) pim:user:create --admin --no-interaction -- admin "${ADMIN_PASSWORD}" admin@admin.com Admin Admin en_US
 	$(CONSOLE) akeneo:elasticsearch:reset-indexes
 
@@ -107,7 +108,7 @@ ifndef NO_DOCKER
 endif
 	$(MAKE) assets
 	$(MAKE) javascript-dev
-	APP_ENV=dev $(MAKE) database O="--catalog vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures/icecat_demo_dev"
+	APP_ENV=dev $(MAKE) database O="--catalog $(AKENEO_FIXTURES)/icecat_demo_dev"
 
 .PHONY: up
 up:
