@@ -20,6 +20,7 @@ services:
       class: iFixit\Akeneo\iFixitBundle\EventListener\iFixitApi
       arguments:
         - '@ifixit_akeneo.config'
+        - '@logger'
 
    ifixit_akeneo.config:
       class: iFixit\Akeneo\iFixitBundle\iFixitConfig

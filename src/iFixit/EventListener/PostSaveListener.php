@@ -33,6 +33,7 @@ class PostSaveListener {
    public function onPreSaveAll(GenericEvent $event) {
       $allSubjects = $event->getSubject();
       $subject = $this->head($allSubjects);
+      $this->ifixitApi->log("Post save all: " . get_class($subject));
 
       if ($subject instanceof ProductInterface) {
          $this->preSaveEventDepth++;
@@ -43,6 +44,7 @@ class PostSaveListener {
 
    public function onPreSave(GenericEvent $event) {
       $subject = $event->getSubject();
+      $this->ifixitApi->log("Pre save: " . get_class($subject));
 
       if ($subject instanceof GroupInterface) {
          $this->preSaveEventDepth++;
@@ -52,6 +54,7 @@ class PostSaveListener {
    public function onPostSave(GenericEvent $event) {
       $subject = $event->getSubject();
 
+      $this->ifixitApi->log("Post save: " . get_class($subject));
       switch (true) {
          case $subject instanceof GroupInterface:
             if (--$this->preSaveEventDepth == 0) {
@@ -78,6 +81,7 @@ class PostSaveListener {
    public function onPostSaveAll(GenericEvent $event) {
       $allSubjects = $event->getSubject();
       $subject = $this->head($allSubjects);
+      $this->ifixitApi->log("Post save all: " . get_class($subject));
 
       if ($subject instanceof GroupInterface) {
          // post-save-all on an array of groups should be the last event
