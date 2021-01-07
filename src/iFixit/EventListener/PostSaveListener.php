@@ -6,7 +6,7 @@ use iFixit\Akeneo\iFixitBundle\EventListener\iFixitApi;
 
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ProductInterface;
-use Akeneo\Pim\Enrichment\Component\Product\Model\GroupInterface;
+use Akeneo\Pim\Enrichment\Component\Product\Model\ProductModelInterface;
 use Akeneo\Pim\Structure\Component\Model\AttributeInterface;
 use Psr\Log\LoggerInterface;
 
@@ -37,7 +37,7 @@ class PostSaveListener {
 
       if ($subject instanceof ProductInterface) {
          $this->preSaveEventDepth++;
-      } else if ($subject instanceof GroupInterface) {
+      } else if ($subject instanceof ProductModelInterface) {
          $this->preSaveEventDepth++;
       }
    }
@@ -46,7 +46,7 @@ class PostSaveListener {
       $subject = $event->getSubject();
       $this->ifixitApi->log("Pre save: " . get_class($subject));
 
-      if ($subject instanceof GroupInterface) {
+      if ($subject instanceof ProductModelInterface) {
          $this->preSaveEventDepth++;
       }
    }
@@ -56,8 +56,10 @@ class PostSaveListener {
 
       $this->ifixitApi->log("Post save: " . get_class($subject));
       switch (true) {
-         case $subject instanceof GroupInterface:
+         case $subject instanceof ProductModelInterface:
             if (--$this->preSaveEventDepth == 0) {
+               $skus = $this->getSkusFromProductModel($subject);
+               $this->savedSkus->add($sku);
                $this->notifySavedSkusChanged();
             }
             break;
@@ -83,7 +85,7 @@ class PostSaveListener {
       $subject = $this->head($allSubjects);
       $this->ifixitApi->log("Post save all: " . get_class($subject));
 
-      if ($subject instanceof GroupInterface) {
+      if ($subject instanceof ProductModelInterface) {
          // post-save-all on an array of groups should be the last event
          // possible so we should reset to 0.
          $this->preSaveEventDepth = 0;
@@ -117,6 +119,10 @@ class PostSaveListener {
       return new \Ds\Set(array_map(function($product) {
          return $this->getSkuFromProduct($product);
       }, $products));
+   }
+
+   private function getSkusFromProductModel(ProductModelInterface $model): \Ds\Set {
+      return $this->getSkusFromProducts($model->getProducts()->getValues());
    }
 
    private function getSkuFromProduct(ProductInterface $product): string {
