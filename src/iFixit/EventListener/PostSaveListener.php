@@ -5,9 +5,10 @@ namespace iFixit\Akeneo\iFixitBundle\EventListener;
 use iFixit\Akeneo\iFixitBundle\EventListener\iFixitApi;
 
 use Symfony\Component\EventDispatcher\GenericEvent;
-use Pim\Component\Catalog\Model\ProductInterface;
-use Pim\Component\Catalog\Model\AttributeInterface;
-use Pim\Component\Catalog\Model\GroupInterface;
+use Akeneo\Pim\Enrichment\Component\Product\Model\ProductInterface;
+use Akeneo\Pim\Enrichment\Component\Product\Model\ProductModelInterface;
+use Akeneo\Pim\Structure\Component\Model\AttributeInterface;
+use Psr\Log\LoggerInterface;
 
 class PostSaveListener {
    /**
@@ -18,7 +19,7 @@ class PostSaveListener {
     */
    private $preSaveEventDepth = 0;
    // List of skus that recieved post-save event
-   /** @var \DS\Set */
+   /** @var \Ds\Set */
    private $savedSkus;
 
    /** @var iFixitApi */
@@ -26,24 +27,26 @@ class PostSaveListener {
 
    public function __construct(iFixitApi $ifixitApi) {
       $this->ifixitApi = $ifixitApi;
-      $this->savedSkus = new \DS\Set();
+      $this->savedSkus = new \Ds\Set();
    }
 
    public function onPreSaveAll(GenericEvent $event) {
       $allSubjects = $event->getSubject();
       $subject = $this->head($allSubjects);
+      $this->ifixitApi->log("Post save all: " . get_class($subject));
 
       if ($subject instanceof ProductInterface) {
          $this->preSaveEventDepth++;
-      } else if ($subject instanceof GroupInterface) {
+      } else if ($subject instanceof ProductModelInterface) {
          $this->preSaveEventDepth++;
       }
    }
 
    public function onPreSave(GenericEvent $event) {
       $subject = $event->getSubject();
+      $this->ifixitApi->log("Pre save: " . get_class($subject));
 
-      if ($subject instanceof GroupInterface) {
+      if ($subject instanceof ProductModelInterface) {
          $this->preSaveEventDepth++;
       }
    }
@@ -51,9 +54,12 @@ class PostSaveListener {
    public function onPostSave(GenericEvent $event) {
       $subject = $event->getSubject();
 
+      $this->ifixitApi->log("Post save: " . get_class($subject));
       switch (true) {
-         case $subject instanceof GroupInterface:
+         case $subject instanceof ProductModelInterface:
             if (--$this->preSaveEventDepth == 0) {
+               $skus = $this->getSkusFromProductModel($subject);
+               $this->savedSkus->add($sku);
                $this->notifySavedSkusChanged();
             }
             break;
@@ -77,8 +83,9 @@ class PostSaveListener {
    public function onPostSaveAll(GenericEvent $event) {
       $allSubjects = $event->getSubject();
       $subject = $this->head($allSubjects);
+      $this->ifixitApi->log("Post save all: " . get_class($subject));
 
-      if ($subject instanceof GroupInterface) {
+      if ($subject instanceof ProductModelInterface) {
          // post-save-all on an array of groups should be the last event
          // possible so we should reset to 0.
          $this->preSaveEventDepth = 0;
@@ -95,7 +102,7 @@ class PostSaveListener {
       $this->savedSkus->clear();
    }
 
-   private function notifySkusChanged(\DS\Set $skus) {
+   private function notifySkusChanged(\Ds\Set $skus) {
       if ($skus->isEmpty()) {
          return;
       }
@@ -108,10 +115,14 @@ class PostSaveListener {
       ]);
    }
 
-   private function getSkusFromProducts(array $products): \DS\Set {
-      return new \DS\Set(array_map(function($product) {
+   private function getSkusFromProducts(array $products): \Ds\Set {
+      return new \Ds\Set(array_map(function($product) {
          return $this->getSkuFromProduct($product);
       }, $products));
+   }
+
+   private function getSkusFromProductModel(ProductModelInterface $model): \Ds\Set {
+      return $this->getSkusFromProducts($model->getProducts()->getValues());
    }
 
    private function getSkuFromProduct(ProductInterface $product): string {
