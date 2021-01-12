@@ -1,0 +1,2 @@
+ifixit_bundle:
+    resource: '@iFixitAkeneoBundle/Resources/config/routing.yml'
