@@ -5,3 +5,9 @@ services:
          - '@pim_catalog.repository.group'
          - '@pim_catalog.factory.group'
          - '@pim_catalog.saver.group'
+   ifixit_akeneo.edit_page_redirector.controller:
+      public: true
+      class: iFixit\Akeneo\iFixitBundle\Controller\EditPageRedirectorController
+      arguments:
+         - '@pim_catalog.repository.product_model'
+         - '@pim_catalog.repository.product'
