@@ -46,10 +46,6 @@ security:
             pattern:                        ^/api/rest/v1$
             security:                       false
 
-        redirector:
-            pattern:                        ^/api/rest/ifixit/redirect
-            security:                       false
-
         api:
             pattern:                        ^/api
             fos_oauth:                      true

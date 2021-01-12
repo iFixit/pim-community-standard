@@ -1,3 +1,2 @@
 ifixit_bundle:
     resource: '@iFixitAkeneoBundle/Resources/config/routing.yml'
-    prefix: '/api/rest/ifixit'
