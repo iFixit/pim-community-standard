@@ -59,7 +59,7 @@ class PostSaveListener {
          case $subject instanceof ProductModelInterface:
             if (--$this->preSaveEventDepth == 0) {
                $skus = $this->getSkusFromProductModel($subject);
-               $this->savedSkus->add($sku);
+               $this->savedSkus = $this->savedSkus->merge($skus);
                $this->notifySavedSkusChanged();
             }
             break;
