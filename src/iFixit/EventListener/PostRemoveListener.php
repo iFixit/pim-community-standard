@@ -3,8 +3,9 @@
 namespace iFixit\Akeneo\iFixitBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\GenericEvent;
-use Pim\Component\Catalog\Model\ProductInterface;
-use Pim\Component\Catalog\Model\AttributeInterface;
+use Akeneo\Pim\Enrichment\Component\Product\Model\ProductInterface;
+use Akeneo\Pim\Structure\Component\Model\AttributeInterface;
+use Akeneo\Pim\Structure\Component\Model\AttributeOptionInterface;
 
 class PostRemoveListener {
    /** @var iFixitApi */
@@ -25,6 +26,10 @@ class PostRemoveListener {
          case $subject instanceof AttributeInterface:
             $code = $subject->getCode();
             $this->ifixitApi->post("admin/akeneo/attribute_removed", ['code' => $code]);
+            break;
+         case $subject instanceof AttributeOptionInterface:
+            $code = $subject->getAttribute()->getCode();
+            $this->ifixitApi->post("admin/akeneo/attribute_changed", ['code' => $code]);
             break;
          default:
             return;
