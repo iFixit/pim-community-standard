@@ -8,6 +8,7 @@ use Symfony\Component\EventDispatcher\GenericEvent;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ProductInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ProductModelInterface;
 use Akeneo\Pim\Structure\Component\Model\AttributeInterface;
+use Akeneo\Pim\Structure\Component\Model\AttributeOptionInterface;
 use Psr\Log\LoggerInterface;
 
 class PostSaveListener {
@@ -76,6 +77,9 @@ class PostSaveListener {
             break;
          case $subject instanceof AttributeInterface:
             $this->notifyAttributeChanged($subject);
+            break;
+         case $subject instanceof AttributeOptionInterface:
+            $this->notifyAttributeChanged($subject->getAttribute());
             break;
       }
    }
