@@ -1,7 +1,3 @@
-clone_product_model:
-    path: /api/rest/ifixit/clone_product_model
-    defaults: { _controller: ifixit_akeneo.clone_product_model.controller:cloneProductModel, _format: json }
-    methods: [POST]
 edit_product_redirector:
     path: /redirect/edit/product/{sku}
     controller: ifixit_akeneo.edit_page_redirector.controller::redirectToProduct

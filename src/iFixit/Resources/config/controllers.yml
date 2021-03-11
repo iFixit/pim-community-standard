@@ -1,10 +1,4 @@
 services:
-   ifixit_akeneo.clone_product_model.controller:
-      class: iFixit\Akeneo\iFixitBundle\Controller\CloneProductModelController
-      arguments:
-         - '@pim_catalog.repository.group'
-         - '@pim_catalog.factory.group'
-         - '@pim_catalog.saver.group'
    ifixit_akeneo.edit_page_redirector.controller:
       public: true
       class: iFixit\Akeneo\iFixitBundle\Controller\EditPageRedirectorController
