@@ -25,3 +25,9 @@ services:
    ifixit_akeneo.config:
       class: iFixit\Akeneo\iFixitBundle\iFixitConfig
 
+   pim_catalog.comparator.attribute.prices:
+      class: iFixit\Akeneo\PricesComparator
+      arguments:
+         - ['pim_catalog_price_collection']
+      tags:
+        - { name: pim_catalog.attribute.comparator, priority: 1 }
