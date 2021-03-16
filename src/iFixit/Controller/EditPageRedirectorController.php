@@ -26,7 +26,7 @@ class EditPageRedirectorController {
    public function redirectToProduct($sku): Response {
       $product = $this->productRepository->findOneByIdentifier($sku);
       if (!$product) {
-         throw new \NotFoundHttpException("Product {$sku} not found");
+         throw new NotFoundHttpException("Product {$sku} not found");
       }
       return new RedirectResponse("/#/enrich/product/{$product->getId()}");
    }
@@ -34,7 +34,7 @@ class EditPageRedirectorController {
    public function redirectToProductModel($productcode): Response {
       $productModel = $this->modelRepository->findOneByIdentifier($productcode);
       if (!$productModel) {
-         throw new \NotFoundHttpException("Product {$productcode} not found");
+         throw new NotFoundHttpException("Product {$productcode} not found");
       }
       return new RedirectResponse("/#/enrich/product-model/{$productModel->getId()}");
    }
