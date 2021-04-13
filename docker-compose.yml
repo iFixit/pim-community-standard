@@ -18,6 +18,7 @@ services:
 
   fpm:
     build: ./docker
+    restart: 'always'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
     volumes:
@@ -42,6 +43,7 @@ services:
 
   httpd:
     image: 'httpd:2.4'
+    restart: 'always'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
     depends_on:
@@ -57,6 +59,7 @@ services:
 
   elasticsearch:
     image: 'docker.elastic.co/elasticsearch/elasticsearch-oss:7.5.1'
+    restart: 'always'
     environment:
       ES_JAVA_OPTS: '${ES_JAVA_OPTS:--Xms512m -Xmx512m}'
       discovery.type: 'single-node'
@@ -69,6 +72,7 @@ services:
 
   job-consumer:
     build: ./docker
+    restart: 'always'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
     depends_on:
