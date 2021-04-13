@@ -26,6 +26,7 @@ services:
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
     working_dir: '/srv/pim'
     command: 'php-fpm -F'
+    restart: always
     networks:
       - 'pim'
 
@@ -52,6 +53,7 @@ services:
       - './:/srv/pim:ro'
       - './docker/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro'
       - './docker/akeneo.conf:/usr/local/apache2/conf/vhost.conf:ro'
+    restart: always
     networks:
       - 'pim'
 
@@ -64,6 +66,7 @@ services:
       - '${DOCKER_PORT_ELASTICSEARCH:-9210}:9200'
     volumes:
       - './data/elasticsearch:/usr/share/elasticsearch/data'
+    restart: always
     networks:
       - 'pim'
 
@@ -79,6 +82,7 @@ services:
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
     working_dir: '/srv/pim'
     command: 'php bin/console akeneo:batch:job-queue-consumer-daemon'
+    restart: always
     networks:
       - 'pim'
 
