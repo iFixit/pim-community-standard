@@ -42,7 +42,7 @@ class PricesComparator extends AkeneoPricesComparator {
       foreach ($data['data'] as $price) {
          $dataPrices[$price['currency']] = $price['amount'];
          if (is_numeric($price['amount'])) {
-            $dataPrices[$price['currency']] = number_format($price['amount'], 4);
+            $dataPrices[$price['currency']] = number_format($price['amount'], 4, '.', '');
          }
          // Fill in nulls here so that these two arrays end up with the same
          // keys and thus end up comparable
@@ -53,7 +53,7 @@ class PricesComparator extends AkeneoPricesComparator {
       foreach ($originals['data'] as $price) {
          $originalPrices[$price['currency']] = $price['amount'];
          if (is_numeric($price['amount'])) {
-            $originalPrices[$price['currency']] = number_format($price['amount'], 4);
+            $originalPrices[$price['currency']] = number_format($price['amount'], 4, '.', '');
          }
       }
 
