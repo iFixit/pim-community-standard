@@ -19,9 +19,16 @@ class PostSaveListener {
     * we get the last post-save event (depth == 0).
     */
    private $preSaveEventDepth = 0;
+   // Same thing but for attributes
+   private $attrPreSaveEventDepth = 0;
+
    // List of skus that recieved post-save event
    /** @var \Ds\Set */
    private $savedSkus;
+
+   // List of attributes that recieved post-save events
+   /** @var \Ds\Set */
+   private $savedAttributes;
 
    /** @var iFixitApi */
    private $ifixitApi;
@@ -29,17 +36,22 @@ class PostSaveListener {
    public function __construct(iFixitApi $ifixitApi) {
       $this->ifixitApi = $ifixitApi;
       $this->savedSkus = new \Ds\Set();
+      $this->savedAttributes = new \Ds\Set();
    }
 
    public function onPreSaveAll(GenericEvent $event) {
       $allSubjects = $event->getSubject();
       $subject = $this->head($allSubjects);
-      $this->logEvent("Post save all", $subject);
+      $this->logEvent("Pre save all", $subject);
 
       if ($subject instanceof ProductInterface) {
          $this->preSaveEventDepth++;
       } else if ($subject instanceof ProductModelInterface) {
          $this->preSaveEventDepth++;
+      } else if ($subject instanceof AttributeInterface) {
+         $this->attrPreSaveEventDepth++;
+      } else if ($subject instanceof AttributeOptionInterface) {
+         $this->attrPreSaveEventDepth++;
       }
    }
 
@@ -75,11 +87,16 @@ class PostSaveListener {
                $this->notifySkusChanged($skus);
             }
             break;
-         case $subject instanceof AttributeInterface:
-            $this->notifyAttributeChanged($subject);
-            break;
          case $subject instanceof AttributeOptionInterface:
-            $this->notifyAttributeChanged($subject->getAttribute());
+            $subject = $subject->getAttribute();
+         case $subject instanceof AttributeInterface:
+            $attrCode = $subject->getCode();
+            $this->savedAttributes->add($attrCode);
+            // If we're not in a pre-save-all/post-save-all operation, then
+            // notify immediately.
+            if (!$this->attrPreSaveEventDepth) {
+               $this->notifySavedAttributesChanged();
+            }
             break;
       }
    }
@@ -99,6 +116,13 @@ class PostSaveListener {
             $this->notifySavedSkusChanged();
          }
       }
+
+      if ($subject instanceof AttributeInterface ||
+       $subject instanceof AttributeOptionInterface) {
+         if (--$this->attrPreSaveEventDepth == 0) {
+           $this->notifySavedAttributesChanged();
+         }
+      }
    }
 
    private function notifySavedSkusChanged() {
@@ -113,9 +137,17 @@ class PostSaveListener {
       $this->ifixitApi->post("admin/akeneo/skus_changed", ["skus" => $skus->toArray()]);
    }
 
-   private function notifyAttributeChanged(AttributeInterface $attribute) {
+   private function notifySavedAttributesChanged() {
+      foreach ($this->savedAttributes as $attrCode) {
+         $this->notifyAttributeChanged($attrCode);
+      }
+      $this->savedAttributes->clear();
+   }
+
+   private function notifyAttributeChanged(string $attrCode) {
+      $this->ifixitApi->log("Sending attribute_changed hook: $attrCode");
       $this->ifixitApi->post("admin/akeneo/attribute_changed", [
-         "code" => $attribute->getCode(),
+         "code" => $attrCode,
       ]);
    }
 
