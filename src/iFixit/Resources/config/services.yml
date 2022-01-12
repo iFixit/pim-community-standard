@@ -31,3 +31,24 @@ services:
          - ['pim_catalog_price_collection']
       tags:
         - { name: pim_catalog.attribute.comparator, priority: 1 }
+
+   # Custom Column merger that allows for nulling out prices
+   # Note: this overrides the Akeneo service by name (and extends the class)
+   pim_connector.array_converter.flat_to_standard.product.columns_merger:
+      class: iFixit\Akeneo\ColumnsMerger
+      arguments:
+         - '@pim_connector.array_converter.flat_to_standard.product.attribute_column_info_extractor'
+
+   # Decorate the price collection value factory so it doesn't complain about
+   # prices with null "amount" values.
+   ifixit_akeneo.pim.enrichment.factory.value.price_collection:
+      class: iFixit\Akeneo\PriceCollectionValueFactory
+      # Don't know why "decorates" didn't work here, Symfony says it should
+      # decorates: akeneo.pim.enrichment.factory.value.price_collection
+      arguments:
+        # This is the class we arer deocrating, so we take an instance in the
+        # constructor
+        - '@akeneo.pim.enrichment.factory.value.price_collection'
+      tags:
+        # Akeneo's service has the default priority of 0
+        - { name: akeneo.pim.enrichment.factory.product_value, priority: 1 }
