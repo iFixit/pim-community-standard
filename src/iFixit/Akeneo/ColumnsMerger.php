@@ -29,4 +29,34 @@ use Akeneo\Pim\Structure\Component\AttributeTypes;
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 class ColumnsMerger extends AkeneoColumnsMerger {
+   /**
+    * Collect price data exploded in different columns
+    *
+    * @param array  $collectedPrices
+    * @param array  $attributeInfos
+    * @param string $fieldValue
+    *
+    * @return array collected metrics
+    */
+   protected function collectPriceData(array $collectedPrices, array $attributeInfos, $fieldValue)
+   {
+      $cleanField = $this->getCleanFieldName($attributeInfos);
+      if (null !== $attributeInfos['price_currency']) {
+         $collectedPrices[$cleanField] = $collectedPrices[$cleanField] ?? [];
+         if (trim($fieldValue) === '') {
+            return $collectedPrices;
+         }
+         $collectedPrices[$cleanField][] = sprintf(
+            '%s%s%s',
+            $fieldValue,
+            AttributeColumnInfoExtractor::UNIT_SEPARATOR,
+            $attributeInfos['price_currency']
+         );
+      } else {
+         $collectedPrices[$cleanField] = explode(AttributeColumnInfoExtractor::ARRAY_SEPARATOR, $fieldValue);
+      }
+
+      return $collectedPrices;
+   }
+
 }
