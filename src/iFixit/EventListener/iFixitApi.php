@@ -5,6 +5,7 @@ namespace iFixit\Akeneo\iFixitBundle\EventListener;
 use iFixit\Akeneo\iFixitBundle\iFixitConfig;
 
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\{Client, HandlerStack, Middleware, RetryMiddleware};
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Log\LoggerInterface;
@@ -25,12 +26,18 @@ class iFixitApi {
       $this->config = $config;
       $this->logger = $logger;
 
+      $stack = HandlerStack::create();
+      $stack->push(Middleware::retry(function ($retries, $request, $response = null) {
+         return $retries <= 2;
+      });
+
       $settings = [
          'connect_timeout' => 1,
          'timeout' => 3,
+         'handler' => $stack,
       ];
 
-      $this->client = new \GuzzleHttp\Client($settings);
+      $this->client = new Client($settings);
    }
 
    public function log($message, $context = []) {
