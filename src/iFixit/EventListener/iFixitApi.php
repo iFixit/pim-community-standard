@@ -5,7 +5,7 @@ namespace iFixit\Akeneo\iFixitBundle\EventListener;
 use iFixit\Akeneo\iFixitBundle\iFixitConfig;
 
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\{Client, HandlerStack, Middleware, RetryMiddleware};
+use GuzzleHttp\{Client, HandlerStack, Middleware};
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Log\LoggerInterface;
