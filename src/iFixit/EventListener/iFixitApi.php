@@ -29,7 +29,7 @@ class iFixitApi {
       $stack = HandlerStack::create();
       $stack->push(Middleware::retry(function ($retries, $request, $response = null) {
          return $retries <= 2;
-      });
+      }));
 
       $settings = [
          'connect_timeout' => 1,
