@@ -28,7 +28,8 @@ class iFixitApi {
 
       $stack = HandlerStack::create();
       $stack->push(Middleware::retry(function ($retries, $request, $response = null) {
-         return $retries <= 2;
+         $code = $response->getStatusCode();
+         return ($code < 200 || $code > 299) && $retries <= 2;
       }));
 
       $settings = [
