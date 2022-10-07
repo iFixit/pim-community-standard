@@ -23,10 +23,19 @@ yarn.lock: package.json
 node_modules: yarn.lock
 	PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 $(YARN_RUN) install
 
+.PHONY: javascript-extensions
+javascript-extensions:
+	$(YARN_RUN) run update-extensions
+
+.PHONY: dsm
+dsm:
+	PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 $(YARN_RUN) --cwd=vendor/akeneo/pim-community-dev/akeneo-design-system install --frozen-lockfile
+	$(YARN_RUN) --cwd=vendor/akeneo/pim-community-dev/akeneo-design-system run lib:build
+
 .PHONY: assets
 assets:
 	$(CMD_ON_PROJECT) rm -rf public/bundles public/js
-	$(CONSOLE) pim:installer:assets --symlink --clean
+	$(PHP_RUN) bin/console pim:installer:assets --symlink --clean
 
 .PHONY: css
 css:
@@ -44,7 +53,7 @@ javascript-dev:
 	$(YARN_RUN) run webpack-dev
 
 .PHONY: front
-front: assets css javascript-dev
+front: assets css dsm javascript-dev
 
 .PHONY: database
 database:
@@ -55,7 +64,10 @@ database:
 
 .PHONY: cache
 cache:
-	$(CMD_ON_PROJECT) rm -rf var/cache && $(CONSOLE) --verbose cache:warmup
+	$(CMD_ON_PROJECT) rm -rf var/cache && $(PHP_RUN) bin/console cache:warmup
+
+composer.lock: composer.json
+	$(PHP_RUN) -d memory_limit=4G /usr/local/bin/composer update
 
 vendor: composer.lock
 	$(PHP_RUN) -d memory_limit=4G /usr/local/bin/composer install
@@ -78,13 +90,17 @@ prod:
 
 .PHONY: pim-prod
 pim-prod:
-	$(MAKE) cache
 ifndef NO_DOCKER
 	APP_ENV=prod $(MAKE) up
 	docker/wait_docker_up.sh
 endif
+	$(MAKE) cache
 	$(MAKE) assets
+	$(MAKE) dsm
 	$(MAKE) javascript-prod
+	$(MAKE) css
+	$(MAKE) javascript-extensions
+	APP_ENV=prod $(MAKE) database O="--catalog vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures/minimal"
 
 .PHONY: bootstrap-database
 bootstrap-database:
@@ -101,19 +117,33 @@ reindex:
 
 .PHONY: pim-dev
 pim-dev:
-	$(MAKE) cache
 ifndef NO_DOCKER
 	APP_ENV=dev $(MAKE) up
 	docker/wait_docker_up_dev.sh
 endif
+	$(MAKE) cache
 	$(MAKE) assets
+	$(MAKE) dsm
 	$(MAKE) javascript-dev
-	APP_ENV=dev $(MAKE) database O="--catalog $(AKENEO_FIXTURES)/icecat_demo_dev"
+	$(MAKE) css
+	$(MAKE) javascript-extensions
+	APP_ENV=dev $(MAKE) database O="--catalog vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures/icecat_demo_dev"
 
 .PHONY: up
 up:
-	$(DOCKER_COMPOSE) up -d --remove-orphan
+	$(DOCKER_COMPOSE) up -d --remove-orphans
 
 .PHONY: down
 down:
 	$(DOCKER_COMPOSE) down -v
+
+.PHONY: upgrade-front
+upgrade-front:
+	$(MAKE) node_modules
+	$(MAKE) cache
+	$(MAKE) assets
+	$(MAKE) dsm
+	$(MAKE) javascript-prod
+	$(MAKE) css
+	$(MAKE) javascript-extensions
+
