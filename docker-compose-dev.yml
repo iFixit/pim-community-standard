@@ -10,10 +10,10 @@ services:
       XDEBUG_ENABLED: '${XDEBUG_ENABLED:-0}'
       XDEBUG_CONFIG: 'remote_host=172.17.0.1'
     volumes:
+      - '/etc/dozuki:/etc/dozuki:ro'
       - './:/srv/pim'
-      - '${HOST_COMPOSER_HOME:-~/.composer}:/var/www/.composer'
+      - '${HOST_COMPOSER_HOME:-./data/composer}:/var/www/.composer'
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
     working_dir: '/srv/pim'
     command: 'php'
     networks:
@@ -29,11 +29,12 @@ services:
       XDEBUG_ENABLED: '${XDEBUG_ENABLED:-0}'
       XDEBUG_CONFIG: 'remote_host=172.17.0.1'
     volumes:
+      - '/etc/dozuki:/etc/dozuki:ro'
       - './:/srv/pim'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
       - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
     working_dir: '/srv/pim'
     command: 'php-fpm -F'
+    restart: always
     networks:
       - 'pim'
 
@@ -43,7 +44,7 @@ services:
       YARN_CACHE_FOLDER: '/home/node/.yarn'
     volumes:
       - './:/srv/pim'
-      - '${HOST_YARN_CACHE_FOLDER:-~/.cache/yarn}:/home/node/.yarn'
+      - '${HOST_YARN_CACHE_FOLDER:-./data/yarn}:/home/node/.yarn'
     working_dir: '/srv/pim'
     networks:
       - 'pim'
@@ -60,8 +61,6 @@ services:
       - './:/srv/pim:ro'
       - './docker/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro'
       - './docker/akeneo.conf:/usr/local/apache2/conf/vhost.conf:ro'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
     networks:
       - 'pim'
 
@@ -89,6 +88,7 @@ services:
       - '${DOCKER_PORT_ELASTICSEARCH:-9210}:9200'
     volumes:
       - './data/elasticsearch:/usr/share/elasticsearch/data'
+    restart: always
     networks:
       - 'pim'
 
@@ -103,5 +103,20 @@ services:
     networks:
       - 'pim'
 
+  job-consumer:
+    build: ./docker
+    environment:
+      APP_ENV: '${APP_ENV:-prod}'
+    depends_on:
+      - 'fpm'
+    volumes:
+      - '/etc/dozuki:/etc/dozuki:ro'
+      - './:/srv/pim'
+      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
+    working_dir: '/srv/pim'
+    command: 'php bin/console akeneo:batch:job-queue-consumer-daemon'
+    restart: always
+    networks:
+      - 'pim'
 networks:
   pim:
