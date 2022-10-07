@@ -10,7 +10,7 @@ services:
       - '/etc/dozuki:/etc/dozuki:ro'
       - './:/srv/pim'
       - '${HOST_COMPOSER_HOME:-./data/composer}:/var/www/.composer'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
+      - './config/services/akeneo-custom-php.ini:/etc/php/7.4/cli/conf.d/9a-akeneo-custom.ini'
     working_dir: '/srv/pim'
     command: 'php'
     networks:
@@ -23,7 +23,7 @@ services:
     volumes:
       - '/etc/dozuki:/etc/dozuki:ro'
       - './:/srv/pim'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
+      - './config/services/akeneo-custom-php.ini:/etc/php/7.4/fpm/conf.d/9a-akeneo-custom.ini'
     working_dir: '/srv/pim'
     command: 'php-fpm -F'
     restart: always
@@ -58,7 +58,7 @@ services:
       - 'pim'
 
   elasticsearch:
-    image: 'docker.elastic.co/elasticsearch/elasticsearch-oss:7.5.1'
+    image: 'docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.1'
     environment:
       ES_JAVA_OPTS: '${ES_JAVA_OPTS:--Xms512m -Xmx512m}'
       discovery.type: 'single-node'
@@ -79,7 +79,7 @@ services:
     volumes:
       - '/etc/dozuki:/etc/dozuki:ro'
       - './:/srv/pim'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
+      - './config/services/akeneo-custom-php.ini:/etc/php/7.4/cli/conf.d/9a-akeneo-custom.ini'
     working_dir: '/srv/pim'
     command: 'php bin/console akeneo:batch:job-queue-consumer-daemon'
     restart: always

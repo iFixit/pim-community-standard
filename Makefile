@@ -117,4 +117,3 @@ up:
 .PHONY: down
 down:
 	$(DOCKER_COMPOSE) down -v
-
