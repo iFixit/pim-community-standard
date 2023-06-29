@@ -74,10 +74,9 @@ services:
       MYSQL_PASSWORD: '${APP_DATABASE_PASSWORD}'
     volumes:
       - './docker/initdb.d:/docker-entrypoint-initdb.d:ro'
+      - './data/mysql:/var/lib/mysql'
     ports:
       - '${DOCKER_PORT_MYSQL:-33006}:3306'
-    volumes:
-      - './data/mysql:/var/lib/mysql'
     networks:
       - 'pim'
 
