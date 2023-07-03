@@ -100,7 +100,6 @@ endif
 	$(MAKE) javascript-prod
 	$(MAKE) css
 	$(MAKE) javascript-extensions
-	APP_ENV=prod $(MAKE) database O="--catalog vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures/minimal"
 
 .PHONY: bootstrap-database
 bootstrap-database:
@@ -127,7 +126,6 @@ endif
 	$(MAKE) javascript-dev
 	$(MAKE) css
 	$(MAKE) javascript-extensions
-	APP_ENV=dev $(MAKE) database O="--catalog vendor/akeneo/pim-community-dev/src/Akeneo/Platform/Bundle/InstallerBundle/Resources/fixtures/icecat_demo_dev"
 
 .PHONY: up
 up:
@@ -136,14 +134,3 @@ up:
 .PHONY: down
 down:
 	$(DOCKER_COMPOSE) down -v
-
-.PHONY: upgrade-front
-upgrade-front:
-	$(MAKE) node_modules
-	$(MAKE) cache
-	$(MAKE) assets
-	$(MAKE) dsm
-	$(MAKE) javascript-prod
-	$(MAKE) css
-	$(MAKE) javascript-extensions
-
