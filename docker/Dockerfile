@@ -2,11 +2,11 @@ FROM debian:buster-slim as base
 
 ENV PHP_CONF_DATE_TIMEZONE=UTC \
     PHP_CONF_MAX_EXECUTION_TIME=60 \
-    PHP_CONF_MEMORY_LIMIT=512M \
+    PHP_CONF_MEMORY_LIMIT=1G \
     PHP_CONF_OPCACHE_VALIDATE_TIMESTAMP=0 \
     PHP_CONF_MAX_INPUT_VARS=1000 \
-    PHP_CONF_UPLOAD_LIMIT=40M \
-    PHP_CONF_MAX_POST_SIZE=40M
+    PHP_CONF_UPLOAD_LIMIT=100M \
+    PHP_CONF_MAX_POST_SIZE=200M
 
 RUN echo 'APT::Install-Recommends "0" ; APT::Install-Suggests "0" ;' > /etc/apt/apt.conf.d/01-no-recommended && \
     echo 'path-exclude=/usr/share/man/*' > /etc/dpkg/dpkg.cfg.d/path_exclusions && \
