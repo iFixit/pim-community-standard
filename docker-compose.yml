@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.7'
 
 services:
   php:
@@ -12,6 +12,7 @@ services:
       - '${HOST_COMPOSER_HOME:-./data/composer}:/var/www/.composer'
     working_dir: '/srv/pim'
     command: 'php'
+    init: true
     networks:
       - 'pim'
 
@@ -29,7 +30,7 @@ services:
       - 'pim'
 
   node:
-    image: 'akeneo/node:12'
+    image: 'akeneo/node:14'
     environment:
       YARN_CACHE_FOLDER: '/home/node/.yarn'
     volumes:
@@ -56,7 +57,7 @@ services:
       - 'pim'
 
   elasticsearch:
-    image: 'docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.1'
+    image: 'docker.elastic.co/elasticsearch/elasticsearch:7.16.2'
     environment:
       ES_JAVA_OPTS: '${ES_JAVA_OPTS:--Xms512m -Xmx512m}'
       discovery.type: 'single-node'
