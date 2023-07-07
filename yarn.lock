@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@akeneo-pim-community/shared@link:front-packages/shared":
+"@akeneo-pim-community/shared@link:vendor/akeneo/pim-community-dev/front-packages/shared":
   version "1.0.0"
 
 "@babel/code-frame@7.10.4":
@@ -2630,7 +2630,7 @@ ajv@^8.0.1:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-"akeneo-design-system@link:front-packages/akeneo-design-system":
+"akeneo-design-system@link:vendor/akeneo/pim-community-dev/front-packages/akeneo-design-system":
   version "0.0.0"
   uid ""
 
