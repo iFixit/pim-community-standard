@@ -59,6 +59,7 @@ services:
       - './:/srv/pim:ro'
       - './docker/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro'
       - './docker/akeneo.conf:/usr/local/apache2/conf/vhost.conf:ro'
+    privileged: true
     networks:
       - 'pim'
 

@@ -53,6 +53,7 @@ services:
       - './docker/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro'
       - './docker/akeneo.conf:/usr/local/apache2/conf/vhost.conf:ro'
     restart: always
+    privileged: true
     networks:
       - 'pim'
 
