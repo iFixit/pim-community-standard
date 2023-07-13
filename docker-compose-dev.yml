@@ -112,7 +112,7 @@ services:
       - '/etc/dozuki:/etc/dozuki:ro'
       - './:/srv/pim'
     working_dir: '/srv/pim'
-    command: 'php bin/console akeneo:batch:job-queue-consumer-daemon'
+    command: 'php bin/console messenger:consume ui_job import_export_job data_maintenance_job --env=$APP_ENV'
     restart: always
     networks:
       - 'pim'
