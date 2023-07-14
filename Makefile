@@ -86,11 +86,11 @@ prod:
 
 .PHONY: pim-prod
 pim-prod:
+	$(MAKE) cache
 ifndef NO_DOCKER
 	APP_ENV=prod $(MAKE) up
 	docker/wait_docker_up.sh
 endif
-	$(MAKE) cache
 	$(MAKE) assets
 	$(MAKE) front-packages
 	$(MAKE) javascript-prod
