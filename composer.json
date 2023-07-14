@@ -31,14 +31,11 @@
         "symfony/web-profiler-bundle": "^5.4.0"
     },
     "scripts": {
-        "post-update-cmd": [
-            "bash vendor/akeneo/pim-community-dev/std-build/install-required-files.sh"
-        ],
-        "post-install-cmd": [
-            "bash vendor/akeneo/pim-community-dev/std-build/install-required-files.sh"
-        ],
-        "post-create-project-cmd": [
-            "bash vendor/akeneo/pim-community-dev/std-build/install-required-files.sh"
+        "post-upgrade": [
+            "bash vendor/akeneo/pim-community-dev/std-build/install-required-files.sh",
+            "patch -p0 < patches/migrations.patch",
+            "cp .env .env.upgrade",
+            "cp .env.local .env"
         ]
     },
     "minimum-stability": "stable",

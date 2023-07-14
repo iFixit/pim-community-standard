@@ -131,12 +131,6 @@ up:
 down:
 	$(DOCKER_COMPOSE) down -v
 
-.PHONY: upgrade-front
-upgrade-front:
-	$(MAKE) node_modules
-	$(MAKE) cache
-	$(MAKE) assets
-	$(MAKE) front-packages
-	$(MAKE) javascript-prod
-	$(MAKE) css
-	$(MAKE) javascript-extensions
+.PHONY: upgrade
+upgrade: node_modules cache assets front-packages javascript-prod css javascript-extensions
+	$(PHP_RUN) -d memory_limit=4G /usr/local/bin/composer run post-upgrade
