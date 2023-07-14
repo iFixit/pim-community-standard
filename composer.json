@@ -30,14 +30,6 @@
         "symfony/debug-bundle": "^5.4.0",
         "symfony/web-profiler-bundle": "^5.4.0"
     },
-    "scripts": {
-        "post-upgrade": [
-            "bash vendor/akeneo/pim-community-dev/std-build/install-required-files.sh",
-            "patch -p0 < patches/migrations.patch",
-            "cp .env .env.upgrade",
-            "cp .env.local .env"
-        ]
-    },
     "minimum-stability": "stable",
     "config": {
         "allow-plugins": {

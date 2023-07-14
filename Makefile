@@ -133,4 +133,7 @@ down:
 
 .PHONY: upgrade
 upgrade: node_modules cache assets front-packages javascript-prod css javascript-extensions
-	$(PHP_RUN) -d memory_limit=4G /usr/local/bin/composer run post-upgrade
+	bash vendor/akeneo/pim-community-dev/std-build/install-required-files.sh
+	patch -p0 < patches/migrations.patch
+	cp .env .env.upgrade
+	cp .env.local .env
