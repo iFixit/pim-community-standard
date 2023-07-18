@@ -131,9 +131,32 @@ up:
 down:
 	$(DOCKER_COMPOSE) down -v
 
-.PHONY: upgrade
-upgrade: node_modules cache assets front-packages javascript-prod css javascript-extensions
+.PHONY: ifixit-upgrade
+ifixit-upgrade: dependencies cache assets front-packages javascript-prod css javascript-extensions
 	bash vendor/akeneo/pim-community-dev/std-build/install-required-files.sh
 	patch -p0 < patches/migrations.patch
 	cp .env .env.upgrade
 	cp .env.local .env
+	# Some migrations need elasticsearch to be running
+	$(DOCKER_COMPOSE) up --detach elasticsearch
+	docker/wait_docker_up_dev.sh
+	# Ensure the migrations table exists
+	$(CONSOLE) doctrine:migrations:sync-metadata-storage
+	# Mark the migrations that were ran during the V4 upgrade as already having
+	# been ran. Back then Akeneo didn't have a migrations table or something
+	$(CONSOLE) doctrine:migrations:version --add --range-from='Pim\Upgrade\Schema\Version_4_0_20190801083247_remove_indexes' --range-to='Pim\Upgrade\Schema\Version_4_0_20200728092625_add_remove_non_existing_values_job'
+	# Start with empty indexes so some of the migrations that deal with
+	# elasticsearch don't fail on weird v4 schema
+	$(CONSOLE) akeneo:elasticsearch:reset-indexes
+	# Run all pending migrations
+	$(CONSOLE) doctrine:migrations:migrate
+	# Ensure we have the goods (system requirements)
+	$(CONSOLE) pim:installer:check-requirements
+	# One of the above commands may have created cache files with a different user
+	rm -rf var/cache
+	# Stop the containers that were run for the migration process
+	$(MAKE) down
+	# Build the containers, launch the services
+	$(MAKE) prod
+	# Re-index all the content into elasticsearch
+	$(MAKE) reindex
