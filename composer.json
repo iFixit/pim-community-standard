@@ -22,8 +22,8 @@
         ]
     },
     "require": {
-        "akeneo/pim-community-dev": "^6",
-        "guzzlehttp/guzzle": "^6",
+        "akeneo/pim-community-dev": "^7.0.0",
+        "guzzlehttp/guzzle": "^7",
         "php-ds/php-ds": "^1.4"
     },
     "require-dev": {
@@ -34,6 +34,11 @@
     "config": {
         "allow-plugins": {
             "symfony/flex": true
+        }
+    },
+    "extra": {
+        "symfony": {
+            "require": "5.4.*"
         }
     }
 }
