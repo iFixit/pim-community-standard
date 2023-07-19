@@ -135,6 +135,7 @@ down:
 ifixit-upgrade: dependencies cache assets front-packages javascript-prod css javascript-extensions
 	bash vendor/akeneo/pim-community-dev/std-build/install-required-files.sh
 	patch -p0 < patches/migrations.patch
+	cp patches/migrations/* upgrades/schema/
 	cp .env .env.upgrade
 	cp .env.local .env
 	# Some migrations need elasticsearch to be running
