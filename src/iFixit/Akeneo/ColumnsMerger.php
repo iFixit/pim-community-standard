@@ -40,10 +40,6 @@ class ColumnsMerger extends AkeneoColumnsMerger {
       $cleanField = $this->getCleanFieldName($attributeInfos);
       if (null !== $attributeInfos['price_currency']) {
          $collectedPrices[$cleanField] = $collectedPrices[$cleanField] ?? [];
-         if ('' === trim($fieldValue)) {
-            return $collectedPrices;
-         }
-
          if (is_float($fieldValue)) {
             $fieldValue = str_replace('.', $options['decimal_separator'] ?? '.', $fieldValue);
          }
