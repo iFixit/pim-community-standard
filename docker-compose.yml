@@ -75,7 +75,7 @@ services:
       - 'pim'
 
   job-consumer:
-    build: ./docker
+    image: 'akeneo/pim-php-dev:8.1'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
     depends_on:
