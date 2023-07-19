@@ -7,13 +7,12 @@ services:
       APP_ENV: '${APP_ENV:-prod}'
       COMPOSER_HOME: '/var/www/.composer'
       PHP_IDE_CONFIG: 'serverName=pim-docker-cli'
-      XDEBUG_ENABLED: '${XDEBUG_ENABLED:-0}'
-      XDEBUG_CONFIG: 'remote_host=172.17.0.1'
+      XDEBUG_MODE: '${XDEBUG_MODE:-off}'
+      XDEBUG_CONFIG: 'client_host=172.17.0.1'
     volumes:
+      - '/etc/dozuki:/etc/dozuki:ro'
       - './:/srv/pim'
-      - '${HOST_COMPOSER_HOME:-~/.composer}:/var/www/.composer'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
+      - '${HOST_COMPOSER_HOME:-./data/composer}:/var/www/.composer'
     working_dir: '/srv/pim'
     command: 'php'
     networks:
@@ -26,24 +25,24 @@ services:
       BEHAT_TMPDIR: '/srv/pim/var/cache/tmp'
       BEHAT_SCREENSHOT_PATH: '/srv/pim/var/tests/screenshots'
       PHP_IDE_CONFIG: 'serverName=pim-docker-web'
-      XDEBUG_ENABLED: '${XDEBUG_ENABLED:-0}'
-      XDEBUG_CONFIG: 'remote_host=172.17.0.1'
+      XDEBUG_MODE: '${XDEBUG_MODE:-off}'
+      XDEBUG_CONFIG: 'client_host=172.17.0.1'
     volumes:
+      - '/etc/dozuki:/etc/dozuki:ro'
       - './:/srv/pim'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
     working_dir: '/srv/pim'
     command: 'php-fpm -F'
+    restart: always
     networks:
       - 'pim'
 
   node:
-    image: 'akeneo/node:10'
+    image: 'akeneo/node:12'
     environment:
       YARN_CACHE_FOLDER: '/home/node/.yarn'
     volumes:
       - './:/srv/pim'
-      - '${HOST_YARN_CACHE_FOLDER:-~/.cache/yarn}:/home/node/.yarn'
+      - '${HOST_YARN_CACHE_FOLDER:-./data/yarn}:/home/node/.yarn'
     working_dir: '/srv/pim'
     networks:
       - 'pim'
@@ -60,28 +59,28 @@ services:
       - './:/srv/pim:ro'
       - './docker/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro'
       - './docker/akeneo.conf:/usr/local/apache2/conf/vhost.conf:ro'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/cli/conf.d/9a-akeneo-custom.ini'
-      - './config/services/akeneo-custom-php.ini:/etc/php/7.3/fpm/conf.d/9a-akeneo-custom.ini'
+    privileged: true
     networks:
       - 'pim'
 
   mysql:
-    image: 'mysql:8.0.18'
+    image: 'mysql:8.0.22'
     command: '--default-authentication-plugin=mysql_native_password'
     environment:
       MYSQL_ROOT_PASSWORD: 'root'
       MYSQL_USER: '${APP_DATABASE_USER}'
       MYSQL_DATABASE: '${APP_DATABASE_NAME}'
       MYSQL_PASSWORD: '${APP_DATABASE_PASSWORD}'
+    volumes:
+      - './docker/initdb.d:/docker-entrypoint-initdb.d:ro'
+      - './data/mysql:/var/lib/mysql'
     ports:
       - '${DOCKER_PORT_MYSQL:-33006}:3306'
-    volumes:
-      - './data/mysql:/var/lib/mysql'
     networks:
       - 'pim'
 
   elasticsearch:
-    image: 'docker.elastic.co/elasticsearch/elasticsearch-oss:7.5.1'
+    image: 'docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.1'
     environment:
       ES_JAVA_OPTS: '${ES_JAVA_OPTS:--Xms512m -Xmx512m}'
       discovery.type: 'single-node'
@@ -89,11 +88,12 @@ services:
       - '${DOCKER_PORT_ELASTICSEARCH:-9210}:9200'
     volumes:
       - './data/elasticsearch:/usr/share/elasticsearch/data'
+    restart: always
     networks:
       - 'pim'
 
   object-storage:
-    image: 'minio/minio'
+    image: 'minio/minio:RELEASE.2021-09-15T04-54-25Z'
     entrypoint: '/bin/sh -c "mkdir -p /data/asset /data/archive /data/catalog/ /data/jobs && minio server /data"'
     environment:
       MINIO_ACCESS_KEY: 'AKENEO_OBJECT_STORAGE_ACCESS_KEY'
@@ -103,5 +103,19 @@ services:
     networks:
       - 'pim'
 
+  job-consumer:
+    build: ./docker
+    environment:
+      APP_ENV: '${APP_ENV:-prod}'
+    depends_on:
+      - 'fpm'
+    volumes:
+      - '/etc/dozuki:/etc/dozuki:ro'
+      - './:/srv/pim'
+    working_dir: '/srv/pim'
+    command: 'php bin/console messenger:consume ui_job import_export_job data_maintenance_job --env=$APP_ENV'
+    restart: always
+    networks:
+      - 'pim'
 networks:
   pim:

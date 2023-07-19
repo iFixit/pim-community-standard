@@ -23,10 +23,18 @@ yarn.lock: package.json
 node_modules: yarn.lock
 	PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 $(YARN_RUN) install
 
+.PHONY: javascript-extensions
+javascript-extensions:
+	$(YARN_RUN) run update-extensions
+
+.PHONY: front-packages
+front-packages:
+	PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 $(YARN_RUN) packages:build
+
 .PHONY: assets
 assets:
 	$(CMD_ON_PROJECT) rm -rf public/bundles public/js
-	$(CONSOLE) pim:installer:assets --symlink --clean
+	$(PHP_RUN) bin/console pim:installer:assets --symlink --clean
 
 .PHONY: css
 css:
@@ -44,7 +52,7 @@ javascript-dev:
 	$(YARN_RUN) run webpack-dev
 
 .PHONY: front
-front: assets css javascript-dev
+front: assets css front-packages javascript-dev
 
 .PHONY: database
 database:
@@ -55,16 +63,16 @@ database:
 
 .PHONY: cache
 cache:
-	$(CMD_ON_PROJECT) rm -rf var/cache && $(CONSOLE) --verbose cache:warmup
+	rm -rf var/cache && $(PHP_RUN) bin/console cache:warmup
+
+composer.lock: composer.json
+	$(PHP_RUN) -d memory_limit=4G /usr/local/bin/composer update
 
 vendor: composer.lock
 	$(PHP_RUN) -d memory_limit=4G /usr/local/bin/composer install
 
-autoload:
-	$(PHP_RUN) -d memory_limit=4G /usr/local/bin/composer dump-autoload
-
 .PHONY: dependencies
-dependencies: vendor node_modules autoload
+dependencies: vendor node_modules
 
 .PHONY: dev
 dev:
@@ -84,7 +92,10 @@ ifndef NO_DOCKER
 	docker/wait_docker_up.sh
 endif
 	$(MAKE) assets
+	$(MAKE) front-packages
 	$(MAKE) javascript-prod
+	$(MAKE) css
+	$(MAKE) javascript-extensions
 
 .PHONY: bootstrap-database
 bootstrap-database:
@@ -101,20 +112,51 @@ reindex:
 
 .PHONY: pim-dev
 pim-dev:
-	$(MAKE) cache
 ifndef NO_DOCKER
 	APP_ENV=dev $(MAKE) up
 	docker/wait_docker_up_dev.sh
 endif
+	$(MAKE) cache
 	$(MAKE) assets
+	$(MAKE) front-packages
 	$(MAKE) javascript-dev
-	APP_ENV=dev $(MAKE) database O="--catalog $(AKENEO_FIXTURES)/icecat_demo_dev"
+	$(MAKE) css
+	$(MAKE) javascript-extensions
 
 .PHONY: up
 up:
-	$(DOCKER_COMPOSE) up -d --remove-orphan
+	$(DOCKER_COMPOSE) up -d --remove-orphans
 
 .PHONY: down
 down:
 	$(DOCKER_COMPOSE) down -v
 
+.PHONY: ifixit-upgrade
+ifixit-upgrade: dependencies cache assets front-packages javascript-prod css javascript-extensions
+	bash vendor/akeneo/pim-community-dev/std-build/install-required-files.sh
+	patch -p0 < patches/migrations.patch
+	cp .env .env.upgrade
+	cp .env.local .env
+	# Some migrations need elasticsearch to be running
+	$(DOCKER_COMPOSE) up --detach elasticsearch
+	docker/wait_docker_up_dev.sh
+	# Ensure the migrations table exists
+	$(CONSOLE) doctrine:migrations:sync-metadata-storage
+	# Mark the migrations that were ran during the V4 upgrade as already having
+	# been ran. Back then Akeneo didn't have a migrations table or something
+	$(CONSOLE) doctrine:migrations:version --add --range-from='Pim\Upgrade\Schema\Version_4_0_20190801083247_remove_indexes' --range-to='Pim\Upgrade\Schema\Version_4_0_20200728092625_add_remove_non_existing_values_job'
+	# Start with empty indexes so some of the migrations that deal with
+	# elasticsearch don't fail on weird v4 schema
+	$(CONSOLE) akeneo:elasticsearch:reset-indexes
+	# Run all pending migrations
+	$(CONSOLE) doctrine:migrations:migrate
+	# Ensure we have the goods (system requirements)
+	$(CONSOLE) pim:installer:check-requirements
+	# One of the above commands may have created cache files with a different user
+	rm -rf var/cache
+	# Stop the containers that were run for the migration process
+	$(MAKE) down
+	# Build the containers, launch the services
+	$(MAKE) prod
+	# Re-index all the content into elasticsearch
+	$(MAKE) reindex

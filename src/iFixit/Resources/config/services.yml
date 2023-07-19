@@ -38,6 +38,7 @@ services:
       class: iFixit\Akeneo\ColumnsMerger
       arguments:
          - '@pim_connector.array_converter.flat_to_standard.product.attribute_column_info_extractor'
+         - '@pim_connector.array_converter.flat_to_standard.product.association_columns_resolver'
 
    # Decorate the price collection value factory so it doesn't complain about
    # prices with null "amount" values.
