@@ -30,19 +30,24 @@ use Akeneo\Pim\Structure\Component\AttributeTypes;
  */
 class ColumnsMerger extends AkeneoColumnsMerger {
    /**
-    * Collect price data exploded in different columns
+    * Collect price data exploded in different columns.
     *
-    * @param array  $collectedPrices
-    * @param array  $attributeInfos
     * @param string $fieldValue
     *
     * @return array collected metrics
     */
-   protected function collectPriceData(array $collectedPrices, array $attributeInfos, $fieldValue)
-   {
+   protected function collectPriceData(array $collectedPrices, array $attributeInfos, mixed $fieldValue, array $options) {
       $cleanField = $this->getCleanFieldName($attributeInfos);
       if (null !== $attributeInfos['price_currency']) {
          $collectedPrices[$cleanField] = $collectedPrices[$cleanField] ?? [];
+         if ('' === trim($fieldValue)) {
+            return $collectedPrices;
+         }
+
+         if (is_float($fieldValue)) {
+            $fieldValue = str_replace('.', $options['decimal_separator'] ?? '.', $fieldValue);
+         }
+
          $collectedPrices[$cleanField][] = sprintf(
             '%s%s%s',
             $fieldValue,

@@ -47,7 +47,7 @@ class PriceCollectionValueFactory implements ValueFactory {
             );
          }
 
-         if (!array_key_exists('amount', $price)) {
+         if (!isset($price['amount'])) {
             throw InvalidPropertyTypeException::arrayKeyExpected(
                $attribute->code(),
                'amount',
