@@ -72,6 +72,7 @@ services:
 
   job-consumer:
     build: ./docker
+    user: 1000:1000
     environment:
       APP_ENV: '${APP_ENV:-prod}'
     depends_on:
