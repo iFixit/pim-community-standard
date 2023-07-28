@@ -76,6 +76,7 @@ services:
 
   job-consumer:
     image: 'akeneo/pim-php-dev:8.1'
+    user: 1000:1000
     environment:
       APP_ENV: '${APP_ENV:-prod}'
     depends_on:
