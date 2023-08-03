@@ -45,7 +45,11 @@ class iFixitApi {
       $this->logger->debug($message, $context);
    }
 
-   public function post(string $apiPath, array $body = null): ResponseInterface {
+   public function post(string $apiPath, array $body = null) {
+      $enabled = $this->config->get("connector-enabled");
+      if (!$enabled) {
+         return;
+      }
       $host = $this->config->get("ifixit-api-hostname");
       $url = new Uri("https://$host/api/2.0/$apiPath");
       $request = new Request('POST', $url);
@@ -66,6 +70,5 @@ class iFixitApi {
       if ($code < 200 || $code >= 300) {
          throw new \Exception("iFixit api failed:$apiPath with code:$code");
       }
-      return $response;
    }
 }

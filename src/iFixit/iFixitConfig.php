@@ -10,7 +10,7 @@ class iFixitConfig {
       if ($this->config === null) {
          $this->config = $this->loadConfig();
       }
-      return $this->config[$key];
+      return $this->config[$key] ?? null;
    }
 
    private function loadConfig(): array {
