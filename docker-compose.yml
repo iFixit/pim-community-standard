@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   php:
-    build: ./docker
+    image: 'akeneo/pim-php-dev:8.1'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
       COMPOSER_HOME: '/var/www/.composer'
@@ -12,12 +12,13 @@ services:
       - '${HOST_COMPOSER_HOME:-./data/composer}:/var/www/.composer'
     working_dir: '/srv/pim'
     command: 'php'
+    user: 'www-data'
     init: true
     networks:
       - 'pim'
 
   fpm:
-    build: ./docker
+    image: 'akeneo/pim-php-dev:8.1'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
     volumes:
@@ -30,9 +31,10 @@ services:
       - 'pim'
 
   node:
-    image: 'akeneo/node:14'
+    image: 'akeneo/node:18'
     environment:
       YARN_CACHE_FOLDER: '/home/node/.yarn'
+      CYPRESS_CACHE_FOLDER: '/home/node/.cypress'
     volumes:
       - './:/srv/pim'
       - '${HOST_YARN_CACHE_FOLDER:-./data/yarn}:/home/node/.yarn'
@@ -58,10 +60,12 @@ services:
       - 'pim'
 
   elasticsearch:
-    image: 'docker.elastic.co/elasticsearch/elasticsearch:7.16.2'
+    image: 'elastic/elasticsearch:8.4.2'
     environment:
-      ES_JAVA_OPTS: '${ES_JAVA_OPTS:--Xms512m -Xmx512m}'
+      ES_JAVA_OPTS: '${ES_JAVA_OPTS:--Xms1g -Xmx1g}'
       discovery.type: 'single-node'
+      xpack.security.enabled: 'false'
+      indices.id_field_data.enabled: 'true'
     ports:
       - '${DOCKER_PORT_ELASTICSEARCH:-9210}:9200'
     volumes:
@@ -71,7 +75,8 @@ services:
       - 'pim'
 
   job-consumer:
-    build: ./docker
+    image: 'akeneo/pim-php-dev:8.1'
+    user: 1000:1000
     environment:
       APP_ENV: '${APP_ENV:-prod}'
     depends_on:

@@ -1,8 +1,8 @@
-version: '3.4'
+version: '3.7'
 
 services:
   php:
-    build: ./docker
+    image: 'akeneo/pim-php-dev:8.1'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
       COMPOSER_HOME: '/var/www/.composer'
@@ -15,11 +15,13 @@ services:
       - '${HOST_COMPOSER_HOME:-./data/composer}:/var/www/.composer'
     working_dir: '/srv/pim'
     command: 'php'
+    user: 'www-data'
+    init: true
     networks:
       - 'pim'
 
   fpm:
-    build: ./docker
+    image: 'akeneo/pim-php-dev:8.1'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
       BEHAT_TMPDIR: '/srv/pim/var/cache/tmp'
@@ -37,9 +39,10 @@ services:
       - 'pim'
 
   node:
-    image: 'akeneo/node:12'
+    image: 'akeneo/node:18'
     environment:
       YARN_CACHE_FOLDER: '/home/node/.yarn'
+      CYPRESS_CACHE_FOLDER: '/home/node/.cypress'
     volumes:
       - './:/srv/pim'
       - '${HOST_YARN_CACHE_FOLDER:-./data/yarn}:/home/node/.yarn'
@@ -64,8 +67,8 @@ services:
       - 'pim'
 
   mysql:
-    image: 'mysql:8.0.22'
-    command: '--default-authentication-plugin=mysql_native_password'
+    image: 'mysql:8.0.30'
+    command: '--default-authentication-plugin=mysql_native_password --log_bin_trust_function_creators=1'
     environment:
       MYSQL_ROOT_PASSWORD: 'root'
       MYSQL_USER: '${APP_DATABASE_USER}'
@@ -80,10 +83,12 @@ services:
       - 'pim'
 
   elasticsearch:
-    image: 'docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.1'
+    image: 'elastic/elasticsearch:8.4.2'
     environment:
-      ES_JAVA_OPTS: '${ES_JAVA_OPTS:--Xms512m -Xmx512m}'
+      ES_JAVA_OPTS: '${ES_JAVA_OPTS:--Xms1g -Xmx1g}'
       discovery.type: 'single-node'
+      xpack.security.enabled: 'false'
+      indices.id_field_data.enabled: 'true'
     ports:
       - '${DOCKER_PORT_ELASTICSEARCH:-9210}:9200'
     volumes:
@@ -94,12 +99,13 @@ services:
 
   object-storage:
     image: 'minio/minio:RELEASE.2021-09-15T04-54-25Z'
-    entrypoint: '/bin/sh -c "mkdir -p /data/asset /data/archive /data/catalog/ /data/jobs && minio server /data"'
+    entrypoint: '/bin/sh -c "mkdir -p /data/archive /data/catalog /data/jobs /data/category /data/catalogs_mapping && minio server --console-address :9091 /data"'
     environment:
       MINIO_ACCESS_KEY: 'AKENEO_OBJECT_STORAGE_ACCESS_KEY'
       MINIO_SECRET_KEY: 'AKENEO_OBJECT_STORAGE_SECRET_KEY'
     ports:
       - '${DOCKER_PORT_OBJECT_STORAGE:-9090}:9000'
+      - '${DOCKER_PORT_OBJECT_STORAGE_CONSOLE:-9091}:9091'
     networks:
       - 'pim'
 
