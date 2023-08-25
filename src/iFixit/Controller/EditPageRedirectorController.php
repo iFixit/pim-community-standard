@@ -28,7 +28,7 @@ class EditPageRedirectorController {
       if (!$product) {
          throw new NotFoundHttpException("Product {$sku} not found");
       }
-      return new RedirectResponse("/#/enrich/product/{$product->getId()}");
+      return new RedirectResponse("/#/enrich/product/{$product->getUuid()->toString()}");
    }
 
    public function redirectToProductModel($productcode): Response {
