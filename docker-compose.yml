@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   php:
-    image: 'akeneo/pim-php-dev:8.1'
+    image: 'akeneo/pim-php-dev@sha256:772f7547a65eacb39aba59a53b4012b172f02a11f05cf697bbb64bbce05c1032'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
       COMPOSER_HOME: '/var/www/.composer'
@@ -18,7 +18,7 @@ services:
       - 'pim'
 
   fpm:
-    image: 'akeneo/pim-php-dev:8.1'
+    image: 'akeneo/pim-php-dev@sha256:772f7547a65eacb39aba59a53b4012b172f02a11f05cf697bbb64bbce05c1032'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
     volumes:
@@ -75,7 +75,7 @@ services:
       - 'pim'
 
   job-consumer:
-    image: 'akeneo/pim-php-dev:8.1'
+    image: 'akeneo/pim-php-dev@sha256:772f7547a65eacb39aba59a53b4012b172f02a11f05cf697bbb64bbce05c1032'
     user: 1000:1000
     environment:
       APP_ENV: '${APP_ENV:-prod}'
