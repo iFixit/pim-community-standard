@@ -134,7 +134,14 @@ class PostSaveListener {
       if ($skus->isEmpty()) {
          return;
       }
-      $this->ifixitApi->post("admin/akeneo/skus_changed", ["skus" => $skus->toArray()]);
+      // Give lower priority to batch jobs (import from CSV, batch edit), which
+      // are run from the CLI
+      $priorityAdjustment = php_sapi_name() == 'cli' ? 1 : 0; // higher number = lower priority
+      $this->ifixitApi->post("admin/akeneo/skus_changed", [
+         "skus" => $skus->toArray(),
+         "priorityAdjustment" => $priorityAdjustment,
+         "test" => php_sapi_name(),
+      ]);
    }
 
    private function notifySavedAttributesChanged() {
