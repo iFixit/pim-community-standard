@@ -106,6 +106,11 @@ bootstrap-database:
 
 .PHONY: reindex
 reindex:
+	$(CONSOLE) akeneo:elasticsearch:reset-indexes
+	$(MAKE) reindex-in-place
+
+.PHONY: reindex-in-place
+reindex-in-place:
 	$(CONSOLE) pim:product:clean-removed-products
 	$(CONSOLE) pim:product-model:index --all
 	$(CONSOLE) pim:product:index --all
