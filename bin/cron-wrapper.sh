@@ -13,7 +13,7 @@ set -euo pipefail
 console_command="$2" # first arg is always '-c'
 # Strip off any space-separated args to the console command
 console_command_name="${console_command%% *}"
-CONSOLE="docker-compose run -u www-data --rm php php bin/console"
+CONSOLE="docker compose run -u www-data --rm php php bin/console"
 LOG_FILE="var/logs/$console_command_name.log"
 
 cd "$( dirname -- "${BASH_SOURCE[0]}" )"/..
