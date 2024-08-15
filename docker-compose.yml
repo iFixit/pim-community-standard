@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   php:
     image: 'akeneo/pim-php-dev@sha256:772f7547a65eacb39aba59a53b4012b172f02a11f05cf697bbb64bbce05c1032'
