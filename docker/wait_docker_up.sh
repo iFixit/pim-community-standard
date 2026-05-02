@@ -2,7 +2,7 @@
 
 set -e
 
-MAX_COUNTER=45
+MAX_COUNTER=120
 COUNTER=1
 
 echo "Waiting for Elasticsearch server…"
