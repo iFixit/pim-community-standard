@@ -21,6 +21,7 @@ services:
     image: 'akeneo/pim-php-dev@sha256:772f7547a65eacb39aba59a53b4012b172f02a11f05cf697bbb64bbce05c1032'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
+      PHP_CONF_MEMORY_LIMIT: '${PHP_MEMORY_LIMIT:-512M}'
       PHP_CONF_UPLOAD_LIMIT: '${PHP_UPLOAD_LIMIT:-100M}'
       PHP_CONF_MAX_POST_SIZE: '${PHP_UPLOAD_LIMIT:-100M}'
     volumes:
@@ -82,6 +83,7 @@ services:
     user: 1000:1000
     environment:
       APP_ENV: '${APP_ENV:-prod}'
+      PHP_CONF_MEMORY_LIMIT: '${PHP_CLI_MEMORY_LIMIT:-512M}'
     depends_on:
       - 'fpm'
     volumes:
