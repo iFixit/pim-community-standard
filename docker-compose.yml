@@ -21,9 +21,13 @@ services:
     build: './docker'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
+      PHP_CONF_MEMORY_LIMIT: '${PHP_MEMORY_LIMIT:-512M}'
+      PHP_CONF_UPLOAD_LIMIT: '${PHP_UPLOAD_LIMIT:-100M}'
+      PHP_CONF_MAX_POST_SIZE: '${PHP_UPLOAD_LIMIT:-100M}'
     volumes:
       - '/etc/dozuki:/etc/dozuki:ro'
       - './:/srv/pim'
+      - './docker/php-uploads.ini:/etc/php/8.1/fpm/conf.d/99-zz-uploads.ini:ro'
     working_dir: '/srv/pim'
     command: 'php-fpm -F'
     restart: always
@@ -79,6 +83,7 @@ services:
     user: 1000:1000
     environment:
       APP_ENV: '${APP_ENV:-prod}'
+      PHP_CONF_MEMORY_LIMIT: '${PHP_CLI_MEMORY_LIMIT:-512M}'
     depends_on:
       - 'fpm'
     volumes:
